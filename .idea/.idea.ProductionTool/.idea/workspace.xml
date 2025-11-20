@@ -22,6 +22,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/ExportFile.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/NewFile.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/OpenFile.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/ProjectSettings.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
@@ -105,7 +106,7 @@
       <workItem from="1763555430874" duration="68000" />
       <workItem from="1763561817195" duration="69000" />
       <workItem from="1763561984035" duration="408000" />
-      <workItem from="1763631321451" duration="6437000" />
+      <workItem from="1763631321451" duration="9649000" />
     </task>
     <servers />
   </component>
