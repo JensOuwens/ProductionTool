@@ -1,19 +1,31 @@
+using System;
+using System.Windows.Forms;
 using UnityEngine;
 using SFB;
 using TMPro;
+using UnityEngine.UI;
 using UnityEngine.Windows;
 
 public class SaveFile : MonoBehaviour
 {
     [SerializeField] private TMP_Text outputText;
-    private string textext = "new text";
+    [SerializeField] private TMP_InputField inputField;
+    private OpenFile openFile;
+    
+    private string saveText;
+
+    private void Awake()
+    {
+        openFile = GetComponent<OpenFile>();
+    }
 
     public void OnClickSaveFile()
     {
-        string path = StandaloneFileBrowser.SaveFilePanel("Save File", "", "untitled", "Txt");
-        if (!string.IsNullOrEmpty(path))
+        if (!string.IsNullOrEmpty(openFile.CurrentFilePath))
         {
-            System.IO.File.WriteAllText(path, textext);
+            saveText = inputField.text;
+            outputText.text = "file saved!";
+            System.IO.File.WriteAllText(openFile.CurrentFilePath, saveText);
         }
     }
 }
