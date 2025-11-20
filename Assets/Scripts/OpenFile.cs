@@ -1,16 +1,21 @@
 using UnityEngine;
+using SFB;
+using TMPro;
 
 public class OpenFile : MonoBehaviour
-{
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+{   
+    [SerializeField] private TMP_Text outputText;
 
-    // Update is called once per frame
-    void Update()
+    public void OnClickOpenFile()
     {
-        
+        string[] path = StandaloneFileBrowser.OpenFilePanel("Open File", "", "txt", false);
+        if (path.Length > 0)
+        {
+            string filePath = path[0];
+            
+            string fileContent = System.IO.File.ReadAllText(filePath);
+            
+            outputText.text = fileContent;
+        }
     }
 }
