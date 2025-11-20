@@ -7,7 +7,6 @@
     <list default="true" id="a2a7ce52-a557-4dc2-8641-2df5157c3922" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ProductionTool/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ProductionTool/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NewFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/NewFile.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/OpenFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/OpenFile.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -106,7 +105,7 @@
       <workItem from="1763555430874" duration="68000" />
       <workItem from="1763561817195" duration="69000" />
       <workItem from="1763561984035" duration="408000" />
-      <workItem from="1763631321451" duration="9649000" />
+      <workItem from="1763631321451" duration="10009000" />
     </task>
     <servers />
   </component>

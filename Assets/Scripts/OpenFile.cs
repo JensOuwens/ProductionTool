@@ -20,15 +20,18 @@ public class OpenFile : MonoBehaviour
         {
             CurrentFilePath = path[0];
 
-            ProjectSettings loadedSettings;
+            ProjectSettings CurrentProjectSettings = new ProjectSettings();
 
-            using (FileStream stream = new FileStream(CurrentFilePath, FileMode.Open))
+            using (Stream reader = new FileStream(CurrentFilePath, FileMode.Open))
             {
-                loadedSettings = (ProjectSettings)xmlSerializer.Deserialize(stream);
+                // Call the Deserialize method to restore the object's state.
+                CurrentProjectSettings = (ProjectSettings)xmlSerializer.Deserialize(reader);
             }
+            
+            Debug.Log(CurrentProjectSettings.projectName + CurrentProjectSettings.ballColor + CurrentProjectSettings.ballPositionx + CurrentProjectSettings.ballPositiony);
 
             // OPTIONAL: Show XML text inside input field
-            inputField.text = File.ReadAllText(CurrentFilePath);
+            //inputField.text = File.ReadAllText(CurrentFilePath);
 
             outputText.text = "File opened!";
         }
