@@ -17,7 +17,7 @@ public class OpenFile : MonoBehaviour
             
             string fileContent = System.IO.File.ReadAllText(CurrentFilePath);
             
-            outputText.text = fileContent;
+            outputText.text = "File opened!";
             inputField.text = fileContent;
         }
     }
