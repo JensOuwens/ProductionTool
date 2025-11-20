@@ -1,16 +1,19 @@
 using UnityEngine;
+using SFB;
+using TMPro;
+using UnityEngine.Windows;
 
 public class SaveFile : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    [SerializeField] private TMP_Text outputText;
+    private string textext = "new text";
 
-    // Update is called once per frame
-    void Update()
+    public void OnClickSaveFile()
     {
-        
+        string path = StandaloneFileBrowser.SaveFilePanel("Save File", "", "untitled", "Txt");
+        if (!string.IsNullOrEmpty(path))
+        {
+            System.IO.File.WriteAllText(path, textext);
+        }
     }
 }
