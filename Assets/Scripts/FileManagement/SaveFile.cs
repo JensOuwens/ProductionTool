@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using UnityEngine;
@@ -25,9 +26,12 @@ public class SaveFile : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(openFile.CurrentFilePath))
         {
-            //saveText = inputField.text;
-            //outputText.text = "file saved!";
-            //System.IO.File.WriteAllText(openFile.CurrentFilePath, saveText);
+            ProjectSettings SaveProjectSettings = ProjectSettingsManager.Instance.GetProjectSettings();
+            using (FileStream stream = new FileStream(openFile.CurrentFilePath, FileMode.Create))
+            {
+                xmlSerializer.Serialize(stream, SaveProjectSettings);
+            }
+            outputText.text = "file saved!";
         }
     }
 }

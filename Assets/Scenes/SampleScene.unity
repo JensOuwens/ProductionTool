@@ -1908,6 +1908,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 670737656}
+  - component: {fileID: 670737657}
   m_Layer: 0
   m_Name: ProjectSettingsManager
   m_TagString: Untagged
@@ -1930,6 +1931,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 976862014}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &670737657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670737655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67229ec8295ec3844831ce9cae297eae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectSettingsManager
+  ProjectNameInputField: {fileID: 364593759}
+  BallColorInputField: {fileID: 261354460}
+  BallPositionxInputField: {fileID: 51010960}
+  BallPositionyInputField: {fileID: 2017675446}
 --- !u!1 &766895467
 GameObject:
   m_ObjectHideFlags: 0
@@ -1963,10 +1980,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SaveFile
   outputText: {fileID: 1699425058}
-  ProjectNameInputField: {fileID: 0}
-  BallColorInputField: {fileID: 0}
-  BallPositionxInputField: {fileID: 0}
-  BallPositionyInputField: {fileID: 0}
 --- !u!114 &766895469
 MonoBehaviour:
   m_ObjectHideFlags: 0

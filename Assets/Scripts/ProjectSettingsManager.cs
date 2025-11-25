@@ -4,6 +4,8 @@ using UnityEngine.Events;
 
 public class ProjectSettingsManager : MonoBehaviour
 {
+    public static ProjectSettingsManager Instance { get; private set; }
+    
     [System.NonSerialized] public ProjectSettings currentProjectSettings = new ProjectSettings();
     
     [SerializeField] private TMP_InputField ProjectNameInputField;
@@ -13,6 +15,17 @@ public class ProjectSettingsManager : MonoBehaviour
     
     private void Awake()
     {
+        //singleton logic
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        
         // Subscribe to value changed events
         ProjectNameInputField.onValueChanged.AddListener(ChangeProjectName);
         BallColorInputField.onValueChanged.AddListener(ChangeBallColor);
