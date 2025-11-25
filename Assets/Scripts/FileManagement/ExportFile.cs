@@ -4,5 +4,5 @@ using TMPro;
 
 public class ExportFile : MonoBehaviour
 {
-    //export as ttf
+    //export as ttf using typography library
 }
