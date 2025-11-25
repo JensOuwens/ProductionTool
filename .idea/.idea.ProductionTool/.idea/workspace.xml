@@ -6,9 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="a2a7ce52-a557-4dc2-8641-2df5157c3922" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ProductionTool/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ProductionTool/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/FileManagement/NewFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/FileManagement/NewFile.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/FileManagement/OpenFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/FileManagement/OpenFile.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/FileManagement/SaveFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/FileManagement/SaveFile.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/ProjectSettingsManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/ProjectSettingsManager.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -114,7 +113,7 @@
       <workItem from="1763561817195" duration="69000" />
       <workItem from="1763561984035" duration="408000" />
       <workItem from="1763631321451" duration="13425000" />
-      <workItem from="1764059005491" duration="1495000" />
+      <workItem from="1764059005491" duration="2067000" />
     </task>
     <servers />
   </component>

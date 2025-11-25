@@ -84,4 +84,12 @@ public class ProjectSettingsManager : MonoBehaviour
     {
         return currentProjectSettings;
     }
+
+    public void DisplayProjectSettings()
+    {
+        ProjectNameInputField.text = currentProjectSettings.projectName;
+        BallColorInputField.text = currentProjectSettings.ballColor;
+        BallPositionxInputField.text = currentProjectSettings.ballPositionx.ToString();
+        BallPositionyInputField.text = currentProjectSettings.ballPositiony.ToString();
+    }
 }

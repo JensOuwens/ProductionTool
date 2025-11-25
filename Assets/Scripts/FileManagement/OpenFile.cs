@@ -18,15 +18,14 @@ public class OpenFile : MonoBehaviour
         if (path.Length > 0)
         {
             CurrentFilePath = path[0];
-
-            ProjectSettings CurrentProjectSettings = new ProjectSettings();
+            
 
             using (Stream reader = new FileStream(CurrentFilePath, FileMode.Open))
             {
-                CurrentProjectSettings = (ProjectSettings)xmlSerializer.Deserialize(reader);
+                ProjectSettingsManager.Instance.currentProjectSettings  = (ProjectSettings)xmlSerializer.Deserialize(reader);
             }
             
-            Debug.Log(CurrentProjectSettings.projectName + CurrentProjectSettings.ballColor + CurrentProjectSettings.ballPositionx + CurrentProjectSettings.ballPositiony);
+            ProjectSettingsManager.Instance.DisplayProjectSettings();
 
             outputText.text = "File opened!";
         }
