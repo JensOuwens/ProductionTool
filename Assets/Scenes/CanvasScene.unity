@@ -236,10 +236,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DrawingManager
   drawImage: {fileID: 7731570}
-  backgroundColor: {r: 1, g: 1, b: 1, a: 1}
   totalPixelsX: 1024
   totalPixelsY: 512
-  brushSize: 6
+  brushSize: 4
   brushColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &412326828
 GameObject:

@@ -1,12 +1,30 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
+
+[System.Serializable]
+public class Stroke
+{
+    public Vector2 start;
+    public Vector2 end;
+    public int brushSize;
+    public Color color;
+
+    public Stroke(Vector2 s, Vector2 e, int size, Color c)
+    {
+        start = s;
+        end = e;
+        brushSize = size;
+        color = c;
+    }
+}
 
 public class DrawingManager : MonoBehaviour
 {
     [SerializeField] private RawImage drawImage;
     [SerializeField] private int totalPixelsX = 1024;
     [SerializeField] private int totalPixelsY = 512;
-    [SerializeField] private int brushsize = 6;
+    [SerializeField] private int brushSize = 6;
     [SerializeField] private Color brushColor = Color.black;
 
     private Texture2D generatedTexture;
@@ -14,6 +32,8 @@ public class DrawingManager : MonoBehaviour
 
     private Vector2 lastPos;
     private bool hasLast = false;
+
+    private List<Stroke> strokes = new List<Stroke>();
 
     void Start()
     {
@@ -48,69 +68,69 @@ public class DrawingManager : MonoBehaviour
 
         Vector2 curPos = new Vector2(x, y);
 
+        Stroke stroke;
         if (!hasLast)
         {
-            DrawCircle(curPos);
-            lastPos = curPos;
+            // Single point stroke
+            stroke = new Stroke(curPos, curPos, brushSize, brushColor);
             hasLast = true;
         }
         else
         {
-            DrawLine(lastPos, curPos);
-            lastPos = curPos;
+            stroke = new Stroke(lastPos, curPos, brushSize, brushColor);
         }
 
+        strokes.Add(stroke);
+        lastPos = curPos;
+
+        // Draw only the new stroke
+        DrawLinePixels(stroke.start, stroke.end, stroke.brushSize, stroke.color);
         generatedTexture.Apply();
     }
 
-    void DrawLine(Vector2 start, Vector2 end)
+    void DrawLinePixels(Vector2 start, Vector2 end, int size, Color color)
     {
-        int steps = (int)Vector2.Distance(start, end);
+        int steps = Mathf.Max(1, (int)Vector2.Distance(start, end));
         for (int i = 0; i <= steps; i++)
         {
             float t = i / (float)steps;
             Vector2 point = Vector2.Lerp(start, end, t);
-            DrawCircle(point);
+            DrawCirclePixels(point, size, color);
         }
     }
 
-    void DrawCircle(Vector2 center)
+    void DrawCirclePixels(Vector2 center, int size, Color color)
     {
         int cx = (int)center.x;
         int cy = (int)center.y;
-
-        // ensure brush is opaque
-        Color color = brushColor;
         color.a = 1f;
 
-        for (int x = -brushsize; x <= brushsize; x++)
+        int sqrSize = size * size;
+        for (int x = -size; x <= size; x++)
         {
-            for (int y = -brushsize; y <= brushsize; y++)
+            for (int y = -size; y <= size; y++)
             {
+                if (x * x + y * y > sqrSize) continue;
+
                 int px = cx + x;
                 int py = cy + y;
                 if (px >= 0 && px < totalPixelsX && py >= 0 && py < totalPixelsY)
-                {
-                    if (x * x + y * y <= brushsize * brushsize)
-                        generatedTexture.SetPixel(px, py, color);
-                }
+                    generatedTexture.SetPixel(px, py, color);
             }
         }
     }
 
     public void ClearCanvas()
     {
-        Color clearColor = Color.white; // opaque white
+        strokes.Clear();
+        Color clearColor = Color.white;
         clearColor.a = 1f;
 
-        for (int x = 0; x < totalPixelsX; x++)
-        {
-            for (int y = 0; y < totalPixelsY; y++)
-            {
-                generatedTexture.SetPixel(x, y, clearColor);
-            }
-        }
+        Color[] fill = new Color[totalPixelsX * totalPixelsY];
+        for (int i = 0; i < fill.Length; i++)
+            fill[i] = clearColor;
 
+        generatedTexture.SetPixels(fill);
         generatedTexture.Apply();
     }
 }
