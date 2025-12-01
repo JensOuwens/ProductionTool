@@ -1,104 +1,116 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DrawingManager : MonoBehaviour
 {
-    [SerializeField] private Camera mainCamera;
+    [SerializeField] private RawImage drawImage;
     [SerializeField] private int totalPixelsX = 1024;
     [SerializeField] private int totalPixelsY = 512;
-    [SerializeField] private int brushsize = 4;
-    [SerializeField] private Color brushColor;
+    [SerializeField] private int brushsize = 6;
+    [SerializeField] private Color brushColor = Color.black;
 
-    [SerializeField] private Transform topLeftCorner;
-    [SerializeField] private Transform bottomRightCorner;
-    [SerializeField] private Transform point;
-    
-    [SerializeField] private Material material;
-    
-    [SerializeField] private Texture2D generatedTexture;
+    private Texture2D generatedTexture;
+    private RectTransform rectTransform;
 
-    private Color[] colorMap;
+    private Vector2 lastPos;
+    private bool hasLast = false;
 
-    private int yPixel = 0;
-    private int xPixel = 0;
-    
-    private float xMult;
-    private float yMult;
-
-    private void Start()
+    void Start()
     {
-        colorMap = new Color[totalPixelsX * totalPixelsX];
-        generatedTexture = new Texture2D(totalPixelsX, totalPixelsX, TextureFormat.RGBA32, false);
-        generatedTexture.filterMode = FilterMode.Point;
-        material.SetTexture("baseMap", generatedTexture);
+        rectTransform = drawImage.rectTransform;
 
-        ResetColor();
-        
-        xMult = totalPixelsX / (bottomRightCorner.localPosition.x - topLeftCorner.localPosition.x);
-        yMult = totalPixelsY / (bottomRightCorner.localPosition.y - topLeftCorner.localPosition.y);
+        generatedTexture = new Texture2D(totalPixelsX, totalPixelsY, TextureFormat.RGBA32, false);
+        generatedTexture.filterMode = FilterMode.Point;
+
+        ClearCanvas();
+        drawImage.texture = generatedTexture;
     }
 
-    private void update()
+    void Update()
     {
         if (Input.GetMouseButton(0))
+            DrawFromMouse();
+        else
+            hasLast = false;
+    }
+
+    void DrawFromMouse()
+    {
+        Vector2 localPos;
+        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, null, out localPos))
+            return;
+
+        Vector2 size = rectTransform.rect.size;
+        float x = (localPos.x + size.x * 0.5f) / size.x * totalPixelsX;
+        float y = (localPos.y + size.y * 0.5f) / size.y * totalPixelsY;
+
+        if (x < 0 || y < 0 || x >= totalPixelsX || y >= totalPixelsY) return;
+
+        Vector2 curPos = new Vector2(x, y);
+
+        if (!hasLast)
         {
-            CalculatePixel();
+            DrawCircle(curPos);
+            lastPos = curPos;
+            hasLast = true;
+        }
+        else
+        {
+            DrawLine(lastPos, curPos);
+            lastPos = curPos;
+        }
+
+        generatedTexture.Apply();
+    }
+
+    void DrawLine(Vector2 start, Vector2 end)
+    {
+        int steps = (int)Vector2.Distance(start, end);
+        for (int i = 0; i <= steps; i++)
+        {
+            float t = i / (float)steps;
+            Vector2 point = Vector2.Lerp(start, end, t);
+            DrawCircle(point);
         }
     }
 
-    private void CalculatePixel()
+    void DrawCircle(Vector2 center)
     {
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 5f))
-        {
-            point.position = hit.point;
-            xPixel = (int)((point.localPosition.x - topLeftCorner.localPosition.x) * xMult);
-            yPixel = (int)((point.localPosition.y - topLeftCorner.localPosition.y) * yMult);
-            ChangePixelsAroundPoint();
-        }
-    }
+        int cx = (int)center.x;
+        int cy = (int)center.y;
 
-    private void ChangePixelsAroundPoint()
-    {
-        DrawBrush(xPixel, yPixel);
-        SetTexture();
-    }
-    
-    private void DrawBrush(int xPix, int yPix)
-    {
-        int i = xPix - brushsize + 1, j = yPix - brushsize + 1, maxi = i + brushsize - 1, maxj = j + brushsize - 1;
-        if (i < 0)
-            i = 0;
-        if (j < 0)
-            j = 0;
-        if (maxi >= totalPixelsX)
-            maxi = totalPixelsX - 1;
-        if (maxj >= totalPixelsY)
-            maxj = totalPixelsY - 1;
-        for (int x = i; x <= maxi; x++)
+        // ensure brush is opaque
+        Color color = brushColor;
+        color.a = 1f;
+
+        for (int x = -brushsize; x <= brushsize; x++)
         {
-            for (int y = j; y <= maxj; y++)
+            for (int y = -brushsize; y <= brushsize; y++)
             {
-                if ((x - xPix) * (x - xPix) + (y - yPix) * (y - yPix) <= brushsize * brushsize)
+                int px = cx + x;
+                int py = cy + y;
+                if (px >= 0 && px < totalPixelsX && py >= 0 && py < totalPixelsY)
                 {
-                    colorMap[x * totalPixelsY + y] = brushColor;
+                    if (x * x + y * y <= brushsize * brushsize)
+                        generatedTexture.SetPixel(px, py, color);
                 }
             }
         }
     }
 
-    private void SetTexture()
+    public void ClearCanvas()
     {
-        generatedTexture.SetPixels(colorMap);
-        generatedTexture.Apply();
-    }
+        Color clearColor = Color.white; // opaque white
+        clearColor.a = 1f;
 
-    private void ResetColor()
-    {
-        for (int i = 0; i < colorMap.Length; i++)
+        for (int x = 0; x < totalPixelsX; x++)
         {
-            colorMap[i] = Color.white;
+            for (int y = 0; y < totalPixelsY; y++)
+            {
+                generatedTexture.SetPixel(x, y, clearColor);
+            }
         }
-        SetTexture();
+
+        generatedTexture.Apply();
     }
 }
