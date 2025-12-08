@@ -50,8 +50,8 @@ public class DrawingManager : MonoBehaviour
     [SerializeField] private RawImage drawImage;
     [SerializeField] private int totalPixelsX = 1024;
     [SerializeField] private int totalPixelsY = 512;
-    [SerializeField] private int brushSize = 6;
-    [SerializeField] private Color brushColor = Color.black;
+    [SerializeField] private static int brushSize = 6;
+    [SerializeField] private static Color brushColor = Color.black;
 
     private Texture2D generatedTexture;
     private RectTransform rectTransform;
@@ -189,5 +189,27 @@ public class DrawingManager : MonoBehaviour
             DrawLinePixels(s.GetStart(), s.GetEnd(), s.brushSize, s.GetColor());
 
         generatedTexture.Apply();
+    }
+
+    public static void UpdateBrushSize()
+    {
+        brushSize = (int)ProjectSettingsManager.Instance.currentProjectSettings.brushSize;
+    }
+
+    public static void UpdateBrushColor()
+    {
+        string colorString = ProjectSettingsManager.Instance.currentProjectSettings.brushColor;
+    
+        Color parsedColor;
+        // Try parse string to color
+        if (ColorUtility.TryParseHtmlString(colorString, out parsedColor))
+        {
+            brushColor = parsedColor;
+        }
+        else
+        {
+            Debug.LogWarning("Failed to parse brush color from string: " + colorString);
+            brushColor = Color.black; // fallback color
+        }
     }
 }

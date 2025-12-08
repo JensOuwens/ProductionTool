@@ -15,6 +15,13 @@ public class ProjectSettingsManager : MonoBehaviour
     
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject); // avoid duplicate singletons
+            return;
+        }
+        Instance = this;
+        
         // Subscribe to value changed events
         ProjectNameInputField.onValueChanged.AddListener(ChangeProjectName);
         BrushColorInputField.onValueChanged.AddListener(ChangeBrushColor);
@@ -38,6 +45,7 @@ public class ProjectSettingsManager : MonoBehaviour
     private void ChangeBrushColor(string newText)
     {
         currentProjectSettings.brushColor = newText;
+        DrawingManager.UpdateBrushColor();
     }
 
     private void ChangeBrushSize(string newText)
@@ -45,6 +53,7 @@ public class ProjectSettingsManager : MonoBehaviour
         if (int.TryParse(newText, out int parsedValue))
         {
             currentProjectSettings.brushSize = parsedValue;
+            DrawingManager.UpdateBrushSize();
         }
         else
         {
