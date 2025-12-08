@@ -11,9 +11,8 @@ public class NewFile : MonoBehaviour
         "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
         "<ProjectSettings>\n" +
         "    <projectName>NewProject</projectName>\n" +
-        "    <ballColor>green</ballColor>\n" +
-        "    <ballPositionx>0</ballPositionx>\n" +
-        "    <ballPositiony>0</ballPositiony>\n" +
+        "    <brushColor>green</brushColor>\n" +
+        "    <brushSize>0</brushSize>\n" +
         "    <strokes />\n" +
         "</ProjectSettings>";
 
@@ -36,6 +35,9 @@ public class NewFile : MonoBehaviour
             using (Stream reader = new FileStream(path, FileMode.Open))
             {
                 ProjectSettingsManager.Instance.currentProjectSettings  = (ProjectSettings)xmlSerializer.Deserialize(reader);
+                
+                var dm = FindObjectOfType<DrawingManager>();
+                dm.ClearCanvas();
             }
 
             outputText.text = "File Created!";

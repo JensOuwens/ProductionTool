@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class ProjectSettingsManager : MonoBehaviour
 {
@@ -9,37 +10,23 @@ public class ProjectSettingsManager : MonoBehaviour
     [System.NonSerialized] public ProjectSettings currentProjectSettings = new ProjectSettings();
     
     [SerializeField] private TMP_InputField ProjectNameInputField;
-    [SerializeField] private TMP_InputField BallColorInputField;
-    [SerializeField] private TMP_InputField BallPositionxInputField;
-    [SerializeField] private TMP_InputField BallPositionyInputField;
+    [SerializeField] private TMP_InputField BrushColorInputField;
+    [SerializeField] private TMP_InputField BrushSizeInputField;
     
     private void Awake()
     {
-        //singleton logic
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-        
         // Subscribe to value changed events
         ProjectNameInputField.onValueChanged.AddListener(ChangeProjectName);
-        BallColorInputField.onValueChanged.AddListener(ChangeBallColor);
-        BallPositionxInputField.onValueChanged.AddListener(ChangeBallPositionx);
-        BallPositionyInputField.onValueChanged.AddListener(ChangeBallPositiony);
+        BrushColorInputField.onValueChanged.AddListener(ChangeBrushColor);
+        BrushSizeInputField.onValueChanged.AddListener(ChangeBrushSize);
     }
 
     private void OnDestroy()
     {
         // Unsubscribe from all events
         ProjectNameInputField.onValueChanged.RemoveAllListeners();
-        BallColorInputField.onValueChanged.RemoveAllListeners();
-        BallPositionxInputField.onValueChanged.RemoveAllListeners();
-        BallPositionyInputField.onValueChanged.RemoveAllListeners();
+        BrushColorInputField.onValueChanged.RemoveAllListeners();
+        BrushSizeInputField.onValueChanged.RemoveAllListeners();
     }
 
 // Your existing methods remain unchanged
@@ -48,36 +35,24 @@ public class ProjectSettingsManager : MonoBehaviour
         currentProjectSettings.projectName = newText;
     }
 
-    private void ChangeBallColor(string newText)
+    private void ChangeBrushColor(string newText)
     {
-        currentProjectSettings.ballColor = newText;
+        currentProjectSettings.brushColor = newText;
     }
 
-    private void ChangeBallPositionx(string newText)
+    private void ChangeBrushSize(string newText)
     {
         if (int.TryParse(newText, out int parsedValue))
         {
-            currentProjectSettings.ballPositionx = parsedValue;
+            currentProjectSettings.brushSize = parsedValue;
         }
         else
         {
             // Handle invalid input gracefully
-            currentProjectSettings.ballPositionx = 0; // Default value
+            currentProjectSettings.brushSize = 0; // Default value
         }
     }
-
-    private void ChangeBallPositiony(string newText)
-    {
-        if (int.TryParse(newText, out int parsedValue))
-        {
-            currentProjectSettings.ballPositiony = parsedValue;
-        }
-        else
-        {
-            // Handle invalid input gracefully
-            currentProjectSettings.ballPositiony = 0; // Default value
-        }
-    }
+    
 
 
     public ProjectSettings GetProjectSettings()
@@ -88,8 +63,7 @@ public class ProjectSettingsManager : MonoBehaviour
     public void DisplayProjectSettings()
     {
         ProjectNameInputField.text = currentProjectSettings.projectName;
-        BallColorInputField.text = currentProjectSettings.ballColor;
-        BallPositionxInputField.text = currentProjectSettings.ballPositionx.ToString();
-        BallPositionyInputField.text = currentProjectSettings.ballPositiony.ToString();
+        BrushColorInputField.text = currentProjectSettings.brushColor;
+        BrushSizeInputField.text = currentProjectSettings.brushSize.ToString();
     }
 }
