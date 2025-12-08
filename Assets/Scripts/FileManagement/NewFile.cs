@@ -11,7 +11,7 @@ public class NewFile : MonoBehaviour
         "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
         "<ProjectSettings>\n" +
         "    <projectName>NewProject</projectName>\n" +
-        "    <brushColor>#ff0000</brushColor>\n" +
+        "    <brushColor>#000000</brushColor>\n" +
         "    <brushSize>0</brushSize>\n" +
         "    <strokes />\n" +
         "</ProjectSettings>";
