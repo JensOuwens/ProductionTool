@@ -2,21 +2,47 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-[System.Serializable]
+using UnityEngine;
+using System;
+
+[Serializable]
 public class Stroke
 {
-    public Vector2 start;
-    public Vector2 end;
-    public int brushSize;
-    public Color color;
+    public float startX;
+    public float startY;
 
-    public Stroke(Vector2 s, Vector2 e, int size, Color c)
+    public float endX;
+    public float endY;
+
+    public int brushSize;
+
+    public float r;
+    public float g;
+    public float b;
+    public float a;
+
+    // XML NEED THIS
+    public Stroke() {}
+
+    public Stroke(Vector2 start, Vector2 end, int size, Color col)
     {
-        start = s;
-        end = e;
+        startX = start.x;
+        startY = start.y;
+
+        endX = end.x;
+        endY = end.y;
+
         brushSize = size;
-        color = c;
+
+        r = col.r;
+        g = col.g;
+        b = col.b;
+        a = col.a;
     }
+
+    public Vector2 GetStart() => new Vector2(startX, startY);
+    public Vector2 GetEnd() => new Vector2(endX, endY);
+    public Color GetColor() => new Color(r, g, b, a);
 }
 
 public class DrawingManager : MonoBehaviour
@@ -33,8 +59,10 @@ public class DrawingManager : MonoBehaviour
     private Vector2 lastPos;
     private bool hasLast = false;
 
+    // NOW uses serializable Stroke class
     private List<Stroke> strokes = new List<Stroke>();
 
+    private bool isReady = false;
     void Start()
     {
         rectTransform = drawImage.rectTransform;
@@ -44,6 +72,8 @@ public class DrawingManager : MonoBehaviour
 
         ClearCanvas();
         drawImage.texture = generatedTexture;
+
+        isReady = true;
     }
 
     void Update()
@@ -71,7 +101,6 @@ public class DrawingManager : MonoBehaviour
         Stroke stroke;
         if (!hasLast)
         {
-            // Single point stroke
             stroke = new Stroke(curPos, curPos, brushSize, brushColor);
             hasLast = true;
         }
@@ -83,8 +112,8 @@ public class DrawingManager : MonoBehaviour
         strokes.Add(stroke);
         lastPos = curPos;
 
-        // Draw only the new stroke
-        DrawLinePixels(stroke.start, stroke.end, stroke.brushSize, stroke.color);
+        // Draw new stroke
+        DrawLinePixels(stroke.GetStart(), stroke.GetEnd(), stroke.brushSize, stroke.GetColor());
         generatedTexture.Apply();
     }
 
@@ -120,9 +149,9 @@ public class DrawingManager : MonoBehaviour
         }
     }
 
-    public void ClearCanvas()
+// Clears visual texture ONLY
+    private void ClearCanvasVisual()
     {
-        strokes.Clear();
         Color clearColor = Color.white;
         clearColor.a = 1f;
 
@@ -131,6 +160,34 @@ public class DrawingManager : MonoBehaviour
             fill[i] = clearColor;
 
         generatedTexture.SetPixels(fill);
+        generatedTexture.Apply();
+    }
+
+// Clears both texture AND strokes (used by user)
+    public void ClearCanvas()
+    {
+        strokes.Clear();
+        ClearCanvasVisual();
+    }
+
+    public List<Stroke> GetStrokes()
+    {
+        return strokes;
+    }
+
+    public void SetStrokes(List<Stroke> newStrokes)
+    {
+        strokes = newStrokes;
+        if (isReady)
+            RedrawFromStrokes();
+    }
+
+    public void RedrawFromStrokes()
+    {
+        ClearCanvasVisual(); 
+        foreach (Stroke s in strokes)
+            DrawLinePixels(s.GetStart(), s.GetEnd(), s.brushSize, s.GetColor());
+
         generatedTexture.Apply();
     }
 }

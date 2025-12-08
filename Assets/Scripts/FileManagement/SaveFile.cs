@@ -11,8 +11,8 @@ using UnityEngine.Windows;
 public class SaveFile : MonoBehaviour
 {
     [SerializeField] private TMP_Text outputText;
-    
-    public XmlSerializer xmlSerializer = new XmlSerializer(typeof(ProjectSettings));
+
+    private XmlSerializer xmlSerializer = new XmlSerializer(typeof(ProjectSettings));
     private OpenFile openFile;
     
     private string saveText;
@@ -27,11 +27,17 @@ public class SaveFile : MonoBehaviour
         if (!string.IsNullOrEmpty(openFile.CurrentFilePath))
         {
             ProjectSettings SaveProjectSettings = ProjectSettingsManager.Instance.GetProjectSettings();
+
+            // GET STROKES FROM DRAWING MANAGER
+            SaveProjectSettings.strokes = FindObjectOfType<DrawingManager>().GetStrokes();
+
             using (FileStream stream = new FileStream(openFile.CurrentFilePath, FileMode.Create))
             {
                 xmlSerializer.Serialize(stream, SaveProjectSettings);
             }
+
             outputText.text = "file saved!";
         }
     }
+
 }

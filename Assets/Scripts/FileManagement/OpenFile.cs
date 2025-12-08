@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Xml.Serialization;
 using UnityEngine;
 using SFB;
@@ -9,7 +10,7 @@ public class OpenFile : MonoBehaviour
     [SerializeField] private TMP_Text outputText;
 
     public string CurrentFilePath;
-    public XmlSerializer xmlSerializer = new XmlSerializer(typeof(ProjectSettings));
+    private XmlSerializer xmlSerializer = new XmlSerializer(typeof(ProjectSettings));
 
     public void OnClickOpenFile()
     {
@@ -22,8 +23,17 @@ public class OpenFile : MonoBehaviour
 
             using (Stream reader = new FileStream(CurrentFilePath, FileMode.Open))
             {
-                ProjectSettingsManager.Instance.currentProjectSettings  = (ProjectSettings)xmlSerializer.Deserialize(reader);
+                ProjectSettings loaded = (ProjectSettings)xmlSerializer.Deserialize(reader);
+                ProjectSettingsManager.Instance.currentProjectSettings = loaded;
+
+                // APPLY STROKES TO DRAWING MANAGER
+                var dm = FindObjectOfType<DrawingManager>();
+                if (loaded.strokes == null)
+                    loaded.strokes = new List<Stroke>();
+
+                dm.SetStrokes(loaded.strokes);
             }
+
             
             ProjectSettingsManager.Instance.DisplayProjectSettings();
 

@@ -1,10 +1,21 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
 
-[System.Serializable]
+[Serializable]
 public class ProjectSettings
 {
-    public string projectName = "fd";
-    public string ballColor = "green";
-    public int ballPositionx = 2;
-    public int ballPositiony = 3;
-    
+    public string projectName;
+    public string ballColor;
+    public float ballPositionx;
+    public float ballPositiony;
+
+    // IMPORTANT: XML MUST SEE THIS
+    public List<Stroke> strokes = new List<Stroke>();
+
+    public ProjectSettings()
+    {
+        // ensure strokes always created so never null
+        strokes = new List<Stroke>();
+    }
 }

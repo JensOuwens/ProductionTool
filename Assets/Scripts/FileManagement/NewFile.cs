@@ -7,8 +7,17 @@ public class NewFile : MonoBehaviour
 {
     [SerializeField] private TMP_Text outputText;
     private OpenFile openFile;
-    private string DefaultXMLText = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<ProjectSettings>\n    <projectName>NewProject</projectName>\n    <ballColor>green</ballColor>\n    <ballPositionx>0</ballPositionx>\n    <ballPositiony>0</ballPositiony>\n</ProjectSettings>";
-    public XmlSerializer xmlSerializer = new XmlSerializer(typeof(ProjectSettings));
+    private string DefaultXMLText =
+        "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+        "<ProjectSettings>\n" +
+        "    <projectName>NewProject</projectName>\n" +
+        "    <ballColor>green</ballColor>\n" +
+        "    <ballPositionx>0</ballPositionx>\n" +
+        "    <ballPositiony>0</ballPositiony>\n" +
+        "    <strokes />\n" +
+        "</ProjectSettings>";
+
+    private XmlSerializer xmlSerializer = new XmlSerializer(typeof(ProjectSettings));
     
     private void Awake()
     {
