@@ -76,6 +76,7 @@ public class ProjectSettingsManager : MonoBehaviour
     public void DisplayProjectSettings()
     {
         ProjectNameInputField.text = currentProjectSettings.projectName;
+        BrushSizeInputField.text = currentProjectSettings.brushSize.ToString();
         Color parsedColor;
         if (ColorUtility.TryParseHtmlString(currentProjectSettings.brushColor, out parsedColor))
         {
