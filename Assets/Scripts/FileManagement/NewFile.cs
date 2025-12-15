@@ -11,42 +11,45 @@ using TMPro;
 public class NewFile : MonoBehaviour
 {
     [SerializeField] private TMP_Text outputText;
-    private OpenFile openFile;
-    private string DefaultXMLText =
-        "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-        "<ProjectSettings>\n" +
-        "    <projectName>NewProject</projectName>\n" +
-        "    <brushColor>#000000</brushColor>\n" +
-        "    <brushSize>0</brushSize>\n" +
-        "    <strokes />\n" +
-        "</ProjectSettings>";
 
+    private OpenFile openFile;
     private XmlSerializer xmlSerializer = new XmlSerializer(typeof(ProjectSettings));
-    
+
     private void Awake()
     {
         openFile = GetComponent<OpenFile>();
     }
+
     public void OnClickCreateNewFile()
     {
-        // Let user type file name inside panel
-        string path = StandaloneFileBrowser.SaveFilePanel("Create New File", "", "NewProject", "xml" );
+        string path = StandaloneFileBrowser.SaveFilePanel(
+            "Create New File", "", "NewProject", "xml");
 
-        if (!string.IsNullOrEmpty(path))
+        if (string.IsNullOrEmpty(path))
+            return;
+
+        ProjectSettings ps = new ProjectSettings
         {
-            File.WriteAllText(path, DefaultXMLText);
-            openFile.CurrentFilePath = path;
-            
-            using (Stream reader = new FileStream(path, FileMode.Open))
-            {
-                ProjectSettingsManager.Instance.currentProjectSettings  = (ProjectSettings)xmlSerializer.Deserialize(reader);
-                
-                var dm = FindObjectOfType<DrawingManager>();
-                dm.ClearCanvas();
-            }
+            projectName = "NewProject",
+            brushColor = "#000000",
+            brushSize = 0
+        };
 
-            outputText.text = "File Created!";
-            ProjectSettingsManager.Instance.DisplayProjectSettings();
+        // CREATE ALL CHARACTERS
+        CharacterDefaults.EnsureCharacters(ps);
+
+        using (FileStream stream = new FileStream(path, FileMode.Create))
+        {
+            xmlSerializer.Serialize(stream, ps);
         }
+
+        openFile.CurrentFilePath = path;
+        ProjectSettingsManager.Instance.currentProjectSettings = ps;
+
+        FindObjectOfType<DrawingManager>()
+            .SetCurrentCharacter(ps.characters[0]);
+
+        ProjectSettingsManager.Instance.DisplayProjectSettings();
+        outputText.text = "File Created!";
     }
 }

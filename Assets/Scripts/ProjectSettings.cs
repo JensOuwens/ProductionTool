@@ -3,6 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
+[Serializable]
+public class CharacterData
+{
+    public string character;
+    public List<Stroke> strokes = new List<Stroke>();
+
+    public CharacterData() { }
+
+    public CharacterData(string c)
+    {
+        character = c;
+        strokes = new List<Stroke>();
+    }
+}
+
 /// <summary>
 /// TODO
 /// add different brushes (enum?)
@@ -15,12 +30,11 @@ public class ProjectSettings
     public string brushColor;
     public float brushSize;
 
-    // IMPORTANT: XML MUST SEE THIS
-    public List<Stroke> strokes = new List<Stroke>();
+    // ONE ENTRY PER CHARACTER
+    public List<CharacterData> characters = new List<CharacterData>();
 
     public ProjectSettings()
     {
-        // ensure strokes always created so never null
-        strokes = new List<Stroke>();
+        characters = new List<CharacterData>();
     }
 }

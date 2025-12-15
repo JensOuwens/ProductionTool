@@ -6,6 +6,7 @@ using UnityEngine;
 /// </summary>
 public class CharachterCollectionManager : MonoBehaviour
 {
+    [SerializeField] private GameObject CharachterCollectionContent;
     /// <summary>
   /// TODO:
   /// add charachters:

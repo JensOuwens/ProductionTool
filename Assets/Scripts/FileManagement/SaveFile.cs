@@ -30,18 +30,16 @@ public class SaveFile : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(openFile.CurrentFilePath))
         {
-            ProjectSettings SaveProjectSettings = ProjectSettingsManager.Instance.GetProjectSettings();
-
-            // GET STROKES FROM DRAWING MANAGER
-            SaveProjectSettings.strokes = FindObjectOfType<DrawingManager>().GetStrokes();
+            ProjectSettings ps = ProjectSettingsManager.Instance.GetProjectSettings();
 
             using (FileStream stream = new FileStream(openFile.CurrentFilePath, FileMode.Create))
             {
-                xmlSerializer.Serialize(stream, SaveProjectSettings);
+                xmlSerializer.Serialize(stream, ps);
             }
 
             outputText.text = "file saved!";
         }
     }
+
 
 }

@@ -11,7 +11,6 @@ using System;
 /// once more brushes/settings are added, make sure to add updates
 /// add drawing different shapes (square, circle, straight line) (different script?)
 /// </summary>
-[Serializable]
 public class Stroke
 {
     public float startX;
@@ -65,10 +64,11 @@ public class DrawingManager : MonoBehaviour
     private Vector2 lastPos;
     private bool hasLast = false;
 
-    // NOW uses serializable Stroke class
-    private List<Stroke> strokes = new List<Stroke>();
+    // CURRENT CHARACTER DATA (IMPORTANT)
+    private CharacterData currentCharacter;
 
     private bool isReady = false;
+
     void Start()
     {
         rectTransform = drawImage.rectTransform;
@@ -76,7 +76,7 @@ public class DrawingManager : MonoBehaviour
         generatedTexture = new Texture2D(totalPixelsX, totalPixelsY, TextureFormat.RGBA32, false);
         generatedTexture.filterMode = FilterMode.Point;
 
-        ClearCanvas();
+        ClearCanvasVisual();
         drawImage.texture = generatedTexture;
 
         isReady = true;
@@ -92,6 +92,9 @@ public class DrawingManager : MonoBehaviour
 
     void DrawFromMouse()
     {
+        if (currentCharacter == null)
+            return;
+
         Vector2 localPos;
         if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, null, out localPos))
             return;
@@ -100,7 +103,8 @@ public class DrawingManager : MonoBehaviour
         float x = (localPos.x + size.x * 0.5f) / size.x * totalPixelsX;
         float y = (localPos.y + size.y * 0.5f) / size.y * totalPixelsY;
 
-        if (x < 0 || y < 0 || x >= totalPixelsX || y >= totalPixelsY) return;
+        if (x < 0 || y < 0 || x >= totalPixelsX || y >= totalPixelsY)
+            return;
 
         Vector2 curPos = new Vector2(x, y);
 
@@ -115,10 +119,9 @@ public class DrawingManager : MonoBehaviour
             stroke = new Stroke(lastPos, curPos, brushSize, brushColor);
         }
 
-        strokes.Add(stroke);
+        currentCharacter.strokes.Add(stroke);
         lastPos = curPos;
 
-        // Draw new stroke
         DrawLinePixels(stroke.GetStart(), stroke.GetEnd(), stroke.brushSize, stroke.GetColor());
         generatedTexture.Apply();
     }
@@ -155,7 +158,6 @@ public class DrawingManager : MonoBehaviour
         }
     }
 
-// Clears visual texture ONLY
     private void ClearCanvasVisual()
     {
         Color clearColor = Color.white;
@@ -169,29 +171,32 @@ public class DrawingManager : MonoBehaviour
         generatedTexture.Apply();
     }
 
-// Clears both texture AND strokes (used by user)
+    // CLEAR CURRENT CHARACTER ONLY
     public void ClearCanvas()
     {
-        strokes.Clear();
+        if (currentCharacter != null)
+            currentCharacter.strokes.Clear();
+
         ClearCanvasVisual();
     }
 
-    public List<Stroke> GetStrokes()
+    // SWITCH ACTIVE CHARACTER
+    public void SetCurrentCharacter(CharacterData cd)
     {
-        return strokes;
-    }
+        currentCharacter = cd;
 
-    public void SetStrokes(List<Stroke> newStrokes)
-    {
-        strokes = newStrokes;
         if (isReady)
             RedrawFromStrokes();
     }
 
     public void RedrawFromStrokes()
     {
-        ClearCanvasVisual(); 
-        foreach (Stroke s in strokes)
+        ClearCanvasVisual();
+
+        if (currentCharacter == null)
+            return;
+
+        foreach (Stroke s in currentCharacter.strokes)
             DrawLinePixels(s.GetStart(), s.GetEnd(), s.brushSize, s.GetColor());
 
         generatedTexture.Apply();
@@ -205,17 +210,11 @@ public class DrawingManager : MonoBehaviour
     public static void UpdateBrushColor()
     {
         string colorString = ProjectSettingsManager.Instance.currentProjectSettings.brushColor;
-    
+
         Color parsedColor;
-        // Try parse string to color
         if (ColorUtility.TryParseHtmlString(colorString, out parsedColor))
-        {
             brushColor = parsedColor;
-        }
         else
-        {
-            Debug.LogWarning("Failed to parse brush color from string: " + colorString);
-            brushColor = Color.black; // fallback color
-        }
+            brushColor = Color.black;
     }
 }

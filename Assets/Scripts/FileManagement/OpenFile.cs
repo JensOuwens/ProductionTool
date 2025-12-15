@@ -31,12 +31,13 @@ public class OpenFile : MonoBehaviour
                 ProjectSettings loaded = (ProjectSettings)xmlSerializer.Deserialize(reader);
                 ProjectSettingsManager.Instance.currentProjectSettings = loaded;
 
-                // APPLY STROKES TO DRAWING MANAGER
-                var dm = FindObjectOfType<DrawingManager>();
-                if (loaded.strokes == null)
-                    loaded.strokes = new List<Stroke>();
+                // ENSURE CHARACTERS EXIST
+                CharacterDefaults.EnsureCharacters(loaded);
 
-                dm.SetStrokes(loaded.strokes);
+                // SET FIRST CHARACTER AS ACTIVE
+                var dm = FindObjectOfType<DrawingManager>();
+                dm.SetCurrentCharacter(loaded.characters[0]);
+
             }
 
             
