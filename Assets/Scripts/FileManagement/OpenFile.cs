@@ -5,6 +5,11 @@ using SFB;
 using TMPro;
 using System.IO;
 
+/// <summary>
+/// TODO
+/// start on wich canvas is the current one
+/// display all charachters in the collection. (probably charachterCollectionManager call)
+/// </summary>
 public class OpenFile : MonoBehaviour
 {   
     [SerializeField] private TMP_Text outputText;

@@ -7,7 +7,11 @@ using SFB;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.Windows;
-
+/// <summary>
+/// TODO
+/// add saving for all different letters/charachters
+/// save wich of the letters is the current one.
+/// </summary>
 public class SaveFile : MonoBehaviour
 {
     [SerializeField] private TMP_Text outputText;

@@ -5,6 +5,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+
+/// <summary>
+/// TODO
+/// once more brushes/settings are added, make sure to add updates
+/// add drawing different shapes (square, circle, straight line) (different script?)
+/// </summary>
 [Serializable]
 public class Stroke
 {

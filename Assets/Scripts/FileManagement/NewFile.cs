@@ -3,6 +3,11 @@ using System.Xml.Serialization;
 using UnityEngine;
 using SFB;
 using TMPro;
+/// <summary>
+/// TODO
+/// make new start template with all charachters
+/// load all charachters (call charactercollectionmanager)
+/// </summary>
 public class NewFile : MonoBehaviour
 {
     [SerializeField] private TMP_Text outputText;
