@@ -37,6 +37,9 @@ public class NewFile : MonoBehaviour
 
         // CREATE ALL CHARACTERS
         CharacterDefaults.EnsureCharacters(ps);
+        
+        FindObjectOfType<CharachterCollectionManager>()
+            .LoadCharachtersIntoCollection();
 
         using (FileStream stream = new FileStream(path, FileMode.Create))
         {

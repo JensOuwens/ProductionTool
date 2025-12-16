@@ -6,12 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="a2a7ce52-a557-4dc2-8641-2df5157c3922" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ProductionTool/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ProductionTool/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/UI/Scrollable.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/UI/Scrollable.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/CharachterCollectionManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/CharachterCollectionManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Drawing/DrawingManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Drawing/DrawingManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/FileManagement/NewFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/FileManagement/NewFile.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/FileManagement/OpenFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/FileManagement/OpenFile.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/FileManagement/SaveFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/FileManagement/SaveFile.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/ProjectSettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/ProjectSettings.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,7 +110,9 @@
       <workItem from="1764059005491" duration="5173000" />
       <workItem from="1764583615974" duration="7092000" />
       <workItem from="1765186081777" duration="8131000" />
-      <workItem from="1765795623855" duration="4228000" />
+      <workItem from="1765795623855" duration="4824000" />
+      <workItem from="1765877308701" duration="1647000" />
+      <workItem from="1765881139831" duration="2973000" />
     </task>
     <servers />
   </component>

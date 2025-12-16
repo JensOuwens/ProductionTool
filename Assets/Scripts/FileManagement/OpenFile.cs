@@ -37,6 +37,9 @@ public class OpenFile : MonoBehaviour
                 // SET FIRST CHARACTER AS ACTIVE
                 var dm = FindObjectOfType<DrawingManager>();
                 dm.SetCurrentCharacter(loaded.characters[0]);
+                
+                FindObjectOfType<CharachterCollectionManager>()
+                    .LoadCharachtersIntoCollection();
 
             }
 
