@@ -29,6 +29,7 @@ public class ProjectSettings
     public string projectName;
     public string brushColor;
     public float brushSize;
+    public string currentCharacter;
 
     // ONE ENTRY PER CHARACTER
     public List<CharacterData> characters = new List<CharacterData>();

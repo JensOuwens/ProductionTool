@@ -27,6 +27,8 @@ public class ProjectSettingsManager : MonoBehaviour
         }
 
         Instance = this;
+        
+        currentProjectSettings.brushSize = 4;
 
         // Subscribe to value changed events
         ProjectNameInputField.onValueChanged.AddListener(ChangeProjectName);

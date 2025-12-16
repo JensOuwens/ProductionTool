@@ -13,6 +13,8 @@ public class CharachterCollectionManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] private GameObject CharachterCollectionContent;
     [SerializeField] private GameObject characterButtonPrefab;
+    [SerializeField] private TMP_Text currentCharacterText;
+
     
     private DrawingManager drawingManager;
 
@@ -49,11 +51,39 @@ public class CharachterCollectionManager : MonoBehaviour
                 OnCharacterSelected(cd);
             });
         }
+        
+        // RESTORE LAST CHARACTER
+        CharacterData startChar = null;
+
+        if (!string.IsNullOrEmpty(ps.currentCharacter))
+        {
+            startChar = ps.characters
+                .Find(c => c.character == ps.currentCharacter);
+        }
+
+        // FALLBACK
+        if (startChar == null && ps.characters.Count > 0)
+            startChar = ps.characters[0];
+
+        // APPLY
+        if (startChar != null)
+            OnCharacterSelected(startChar);
+
     }
 
     private void OnCharacterSelected(CharacterData characterData)
     {
-        // SET CURRENT CHARACTER IN DRAWING MANAGER
+        ProjectSettings ps = ProjectSettingsManager.Instance.currentProjectSettings;
+
+        // SAVE CURRENT CHARACTER
+        ps.currentCharacter = characterData.character;
+
+        // UPDATE DRAWING MANAGER
         drawingManager.SetCurrentCharacter(characterData);
+
+        // UPDATE UI TEXT
+        if (currentCharacterText != null)
+            currentCharacterText.text = characterData.character;
     }
+
 }
