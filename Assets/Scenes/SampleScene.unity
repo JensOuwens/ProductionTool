@@ -602,7 +602,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 766895472}
         m_TargetAssemblyTypeName: ExportFile, Assembly-CSharp
-        m_MethodName: OnClickExportFile
+        m_MethodName: ExportFontWithDialog
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
