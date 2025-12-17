@@ -6,11 +6,114 @@
   <component name="ChangeListManager">
     <list default="true" id="a2a7ce52-a557-4dc2-8641-2df5157c3922" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ProductionTool/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ProductionTool/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/CharachterCollectionManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/CharachterCollectionManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/FileManagement/OpenFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/FileManagement/OpenFile.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/ProjectSettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/ProjectSettings.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/ProjectSettingsManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/ProjectSettingsManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/.gitmodules" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Docs/Showcase.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/LICENSE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.GlyphLayout/GlyphIndexList.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.GlyphLayout/GlyphLayout.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.GlyphLayout/GlyphSetPosition.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.GlyphLayout/GlyphSubstitution.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.GlyphLayout/MeasureStringBox.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.GlyphLayout/PixelScaleLayoutExtensions.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.GlyphLayout/Properties/AssemblyInfo.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.GlyphLayout/ScriptLang.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.GlyphLayout/Typography.GlyphLayout.projitems" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.GlyphLayout/Typography.GlyphLayout.shproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.GlyphLayout/UserCharToGlyphIndexMap.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/AdditionalInfo/AdobeGlyphList.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/AdditionalInfo/AdobeGlyphListForNewFont.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/AdditionalInfo/Languages.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/AdditionalInfo/MacPostFormat1.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/AdditionalInfo/OS2_IBMFontClassParameters.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Bounds.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/ByteOrderSwappingBinaryReader.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Geometry.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Glyph.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/IGlyphTranslator.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/OpenFontReader.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/PreviewFontInfo.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/README.MD" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.AdvancedLayout/AttachmentListTable.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.AdvancedLayout/Base.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.AdvancedLayout/COLR.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.AdvancedLayout/CPAL.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.AdvancedLayout/ClassDefTable.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.AdvancedLayout/CoverageTable.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.AdvancedLayout/FeatureInfo.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.AdvancedLayout/FeatureList.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.AdvancedLayout/GDEF.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.AdvancedLayout/GPOS.Others.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.AdvancedLayout/GPOS.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.AdvancedLayout/GSUB.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.AdvancedLayout/GlyphShapingTableEntry.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.AdvancedLayout/IGlyphIndexList.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.AdvancedLayout/JustificationTable.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.AdvancedLayout/LigatureCaretListTable.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.AdvancedLayout/MathTable.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.AdvancedLayout/ScriptList.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.AdvancedLayout/ScriptTable.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.BitmapAndSvgFonts/BitmapFontGlyphSource.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.BitmapAndSvgFonts/BitmapFontsCommon.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.BitmapAndSvgFonts/CBDT.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.BitmapAndSvgFonts/CBLC.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.BitmapAndSvgFonts/EBDT.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.BitmapAndSvgFonts/EBLC.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.BitmapAndSvgFonts/EBSC.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.BitmapAndSvgFonts/SvgTable.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.CFF/CFF.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.CFF/CFFTable.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.CFF/CffEvaluationEngine.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.CFF/Type2CharStringParser.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.CFF/Type2InstructionCompacter.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.Others/HorizontalDeviceMetrics.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.Others/Kern.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.Others/LinearThreashold.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.Others/Merge.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.Others/Meta.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.Others/STAT.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.Others/VerticalDeviceMetrics.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.Others/VerticalMetrics.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.Others/VerticalMetricsHeader.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.TrueType/Cvt_Programs.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.TrueType/Gasp.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.TrueType/Glyf.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.TrueType/GlyphLocations.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.Variations/AVar.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.Variations/CVar.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.Variations/Common.ItemVariationStore.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.Variations/Common.TupleVariationStore.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.Variations/FVar.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.Variations/GVar.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.Variations/HVar.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.Variations/MVar.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables.Variations/VVar.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables/CharacterMap.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables/Cmap.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables/Head.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables/HorizontalHeader.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables/HorizontalMetrics.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables/MaxProfile.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables/NameEntry.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables/OS2.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables/Post.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables/TableEntry.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables/TableEntryCollection.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables/TableHeader.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Tables/Utils.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/TrueTypeInterperter/InvalidFontException.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/TrueTypeInterperter/TrueTypeInterpreter.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Typeface.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Typeface_Extensions.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Typeface_TrimableExtensions.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Typography.OpenFont.projitems" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/Typography.OpenFont.shproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/WebFont/Woff2Reader.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Libraries/Typography-master/Typography.OpenFont/WebFont/WoffReader.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/FileManagement/ExportFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/FileManagement/ExportFile.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,7 +215,8 @@
       <workItem from="1765186081777" duration="8131000" />
       <workItem from="1765795623855" duration="4824000" />
       <workItem from="1765877308701" duration="1647000" />
-      <workItem from="1765881139831" duration="5575000" />
+      <workItem from="1765881139831" duration="6183000" />
+      <workItem from="1765977472066" duration="1595000" />
     </task>
     <servers />
   </component>
