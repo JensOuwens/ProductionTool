@@ -8,7 +8,6 @@ using UnityEngine.Serialization;
 /// TODO
 /// once more brushes are added and more settings, add them here too
 /// </summary>
-/// 
 public class ProjectSettingsManager : MonoBehaviour
 {
     public static ProjectSettingsManager Instance { get; private set; }

@@ -1,104 +1,109 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using UnityEngine;
+using System.IO;
 using SFB;
-
 
 public class ExportFile : MonoBehaviour
 {
-    public void ExportFontWithDialog()
+    const int GLYPH_SIZE = 512;
+    const int SOURCE_W = 1024;
+    const int SOURCE_H = 512;
+
+    public void ExportFontAtlas()
     {
-        string folderPath = StandaloneFileBrowser.OpenFolderPanel("Select Export Folder", "", false)[0];
+        string folder = StandaloneFileBrowser.OpenFolderPanel("Export Font Atlas", "", false)[0];
+        if (string.IsNullOrEmpty(folder)) return;
 
-        if (string.IsNullOrEmpty(folderPath))
-        {
-            Debug.LogWarning("No folder selected for export.");
-            return;
-        }
+        var ps = ProjectSettingsManager.Instance.currentProjectSettings;
+        if (ps == null || ps.characters == null || ps.characters.Count == 0) return;
 
-        ProjectSettings ps = ProjectSettingsManager.Instance.currentProjectSettings;
-        if (ps == null || ps.characters == null || ps.characters.Count == 0)
-        {
-            Debug.LogWarning("No characters to export.");
-            return;
-        }
+        int count = ps.characters.Count;
+        int cols = Mathf.CeilToInt(Mathf.Sqrt(count));
+        int rows = Mathf.CeilToInt(count / (float)cols);
 
-        string ttfPath = Path.Combine(folderPath, ps.projectName + ".ttf");
+        Texture2D atlas = new Texture2D(
+            cols * GLYPH_SIZE,
+            rows * GLYPH_SIZE,
+            TextureFormat.RGBA32,
+            false
+        );
 
-        // --- Step 1: Convert characters to SVG paths ---
-        Dictionary<string, string> svgPaths = new Dictionary<string, string>();
-        int counter = 1;
+        Clear(atlas);
 
+        int index = 0;
         foreach (var ch in ps.characters)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1024 1024\">");
-            sb.Append("<path d=\"");
+            Texture2D glyph = RenderCharacter(ch);
 
-            foreach (var stroke in ch.strokes)
-            {
-                sb.Append($"M {stroke.startX} {stroke.startY} L {stroke.endX} {stroke.endY} ");
-            }
+            int x = (index % cols) * GLYPH_SIZE;
+            int y = (rows - 1 - index / cols) * GLYPH_SIZE;
 
-            sb.Append("\" stroke=\"black\" fill=\"none\" stroke-width=\"1\" />");
-            sb.Append("</svg>");
-            svgPaths[counter.ToString()] = sb.ToString();
-            counter++;
+            atlas.SetPixels(x, y, GLYPH_SIZE, GLYPH_SIZE, glyph.GetPixels());
+            index++;
         }
 
-        // Save SVGs temporarily
-        string svgFolder = Path.Combine(folderPath, "SVGs");
-        Directory.CreateDirectory(svgFolder);
-        foreach (var kv in svgPaths)
+        atlas.Apply();
+
+        File.WriteAllBytes(
+            Path.Combine(folder, ps.projectName + "_Atlas.png"),
+            atlas.EncodeToPNG()
+        );
+
+        Debug.Log("Atlas exported");
+    }
+
+    Texture2D RenderCharacter(CharacterData ch)
+    {
+        Texture2D tex = new Texture2D(GLYPH_SIZE, GLYPH_SIZE, TextureFormat.RGBA32, false);
+        Clear(tex);
+
+        foreach (var s in ch.strokes)
         {
-            File.WriteAllText(Path.Combine(svgFolder, kv.Key + ".svg"), kv.Value);
+            DrawStroke(tex, s);
         }
 
-        // --- Step 2: Generate minimal TTF ---
-        TTFWriter.WriteTTF(ttfPath, ps.projectName, ps.characters);
-        Debug.Log($"TTF created at: {ttfPath}");
+        tex.Apply();
+        return tex;
+    }
 
-        // --- Step 3: Delete SVGs ---
-        try
+    void DrawStroke(Texture2D tex, Stroke s)
+    {
+        Vector2 a = Normalize(s.GetStart());
+        Vector2 b = Normalize(s.GetEnd());
+
+        int steps = Mathf.CeilToInt(Vector2.Distance(a, b));
+        for (int i = 0; i <= steps; i++)
         {
-            Directory.Delete(svgFolder, true);
-            Debug.Log("Temporary SVGs deleted.");
-        }
-        catch (Exception e)
-        {
-            Debug.LogWarning("Failed to delete SVG folder: " + e.Message);
+            float t = i / (float)steps;
+            Vector2 p = Vector2.Lerp(a, b, t);
+            DrawCircle(tex, (int)p.x, (int)p.y, s.brushSize, s.GetColor());
         }
     }
 
-    public static class TTFWriter
+    Vector2 Normalize(Vector2 p)
     {
-        public const int UnitsPerEm = 2048;
+        return new Vector2(
+            p.x / SOURCE_W * GLYPH_SIZE,
+            p.y / SOURCE_H * GLYPH_SIZE
+        );
+    }
 
-        public static void WriteTTF(string path, string fontName, List<CharacterData> characters)
+    void DrawCircle(Texture2D tex, int cx, int cy, int r, Color col)
+    {
+        for (int x = -r; x <= r; x++)
+        for (int y = -r; y <= r; y++)
         {
-            using (var ms = new MemoryStream())
-            using (var bw = new BinaryWriter(ms))
-            {
-                WriteUInt16(bw, 0x0001);
-                WriteUInt16(bw, 1);
-                WriteUInt16(bw, 16);
-                WriteUInt16(bw, 0);
-                WriteUInt16(bw, 16);
-
-                File.WriteAllBytes(path, ms.ToArray());
-            }
+            if (x * x + y * y > r * r) continue;
+            int px = cx + x;
+            int py = cy + y;
+            if (px >= 0 && px < tex.width && py >= 0 && py < tex.height)
+                tex.SetPixel(px, py, col);
         }
+    }
 
-        private static void WriteUInt16(BinaryWriter bw, ushort value)
-        {
-            bw.Write(BitConverter.IsLittleEndian ? ReverseBytes(value) : value);
-        }
-
-        private static ushort ReverseBytes(ushort value)
-        {
-            return (ushort)((value << 8) | (value >> 8));
-        }
+    void Clear(Texture2D tex)
+    {
+        Color[] c = new Color[tex.width * tex.height];
+        for (int i = 0; i < c.Length; i++) c[i] = Color.clear;
+        tex.SetPixels(c);
     }
 }
