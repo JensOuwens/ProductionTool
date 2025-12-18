@@ -2,6 +2,9 @@ using UnityEngine;
 using System.IO;
 using SFB;
 
+/// <summary>
+/// add metadata for all the furthest points from the center, plus the size of every letter. how many letters and probably where every letter is
+/// </summary>
 public class ExportFile : MonoBehaviour
 {
     const int GLYPH_SIZE = 512;
