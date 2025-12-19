@@ -40,7 +40,7 @@ public class BrushCursor : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             Destroy(cursorTex);
 
         cursorTex = new Texture2D(size, size, TextureFormat.RGBA32, false);
-        cursorTex.alphaIsTransparency = true;
+        //cursorTex.alphaIsTransparency = true;
         cursorTex.filterMode = FilterMode.Point;
         cursorTex.wrapMode = TextureWrapMode.Clamp;
 
