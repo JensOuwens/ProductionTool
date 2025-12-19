@@ -10,6 +10,7 @@ public class CharacterData
     public List<Stroke> strokes = new List<Stroke>();
 
     public CharacterData() { }
+    public int codepoint;
 
     public CharacterData(string c)
     {
