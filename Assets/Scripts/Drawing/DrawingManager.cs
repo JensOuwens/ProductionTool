@@ -1,73 +1,39 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
-
-using UnityEngine;
 using System;
-
-
-/// <summary>
-/// TODO
-/// once more brushes/settings are added, make sure to add updates
-/// add drawing different shapes (square, circle, straight line) (different script?)
-/// </summary>
-public class Stroke
-{
-    public float startX;
-    public float startY;
-
-    public float endX;
-    public float endY;
-
-    public int brushSize;
-
-    public float r;
-    public float g;
-    public float b;
-    public float a;
-
-    // XML NEED THIS
-    public Stroke() {}
-
-    public Stroke(Vector2 start, Vector2 end, int size, Color col)
-    {
-        startX = start.x;
-        startY = start.y;
-
-        endX = end.x;
-        endY = end.y;
-
-        brushSize = size;
-
-        r = col.r;
-        g = col.g;
-        b = col.b;
-        a = col.a;
-    }
-
-    public Vector2 GetStart() => new Vector2(startX, startY);
-    public Vector2 GetEnd() => new Vector2(endX, endY);
-    public Color GetColor() => new Color(r, g, b, a);
-}
+using System.Collections.Generic;
 
 public class DrawingManager : MonoBehaviour
 {
     [SerializeField] private RawImage drawImage;
     [SerializeField] private int totalPixelsX = 1024;
     [SerializeField] private int totalPixelsY = 512;
-    [SerializeField] private static int brushSize = 6;
-    [SerializeField] private static Color brushColor = Color.black;
+
+    public static int brushSize = 6;
+    public static Color brushColor = Color.black;
+
+    public static ToolType currentTool = ToolType.Brush;
+    public static BrushShape brushShape = BrushShape.Circle;
+
+    public static float opacity = 1f;
+    public static float hardness = 1f;
+    public static float spacing = 0.25f;
+
+    public static float calligraphyAngle = 45f;
+    public static float calligraphyAspect = 0.3f;
 
     private Texture2D generatedTexture;
     private RectTransform rectTransform;
 
     private Vector2 lastPos;
-    private bool hasLast = false;
+    private Vector2 strokeStart;
+    private bool hasLast;
 
-    // CURRENT CHARACTER DATA (IMPORTANT)
     private CharacterData currentCharacter;
+    private bool isReady;
+    
+    private BrushCursor brushCursor;
 
-    private bool isReady = false;
 
     void Start()
     {
@@ -78,12 +44,17 @@ public class DrawingManager : MonoBehaviour
 
         ClearCanvasVisual();
         drawImage.texture = generatedTexture;
+        
+        brushCursor = FindObjectOfType<BrushCursor>();
 
         isReady = true;
     }
 
     void Update()
     {
+        if (Input.GetMouseButtonDown(0))
+            hasLast = false;
+
         if (Input.GetMouseButton(0))
             DrawFromMouse();
         else
@@ -108,83 +79,173 @@ public class DrawingManager : MonoBehaviour
 
         Vector2 curPos = new Vector2(x, y);
 
-        Stroke stroke;
+        // Fill tool
+        if (currentTool == ToolType.Fill)
+        {
+            Color target = generatedTexture.GetPixel((int)x, (int)y);
+            FloodFill((int)x, (int)y, target, brushColor);
+            generatedTexture.Apply();
+            return;
+        }
+
         if (!hasLast)
         {
-            stroke = new Stroke(curPos, curPos, brushSize, brushColor);
+            strokeStart = curPos;
+            lastPos = curPos;
             hasLast = true;
+            return;
         }
-        else
+
+        Vector2 endPos = curPos;
+
+        // Straight line constraint with middle mouse button
+        if (Input.GetMouseButton(2))
         {
-            stroke = new Stroke(lastPos, curPos, brushSize, brushColor);
+            Vector2 d = curPos - strokeStart;
+            endPos = Mathf.Abs(d.x) > Mathf.Abs(d.y)
+                ? new Vector2(curPos.x, strokeStart.y)
+                : new Vector2(strokeStart.x, curPos.y);
         }
+
+        bool isEraser = currentTool == ToolType.Eraser;
+        Color col = isEraser ? Color.clear : brushColor;
+        col.a = opacity;
+
+        Stroke stroke = new Stroke(
+            lastPos,
+            endPos,
+            brushSize,
+            col,
+            opacity,
+            hardness,
+            spacing,
+            brushShape,
+            isEraser,
+            calligraphyAngle,
+            calligraphyAspect
+        );
 
         currentCharacter.strokes.Add(stroke);
-        lastPos = curPos;
+        lastPos = endPos;
 
-        DrawLinePixels(stroke.GetStart(), stroke.GetEnd(), stroke.brushSize, stroke.GetColor());
+        DrawStrokePixels(stroke);
         generatedTexture.Apply();
     }
 
-    void DrawLinePixels(Vector2 start, Vector2 end, int size, Color color)
+    void DrawStrokePixels(Stroke s)
     {
-        int steps = Mathf.Max(1, (int)Vector2.Distance(start, end));
-        for (int i = 0; i <= steps; i++)
+        float dist = Vector2.Distance(s.Start, s.End);
+        float step = Mathf.Max(1f, s.brushSize * s.spacing);
+        int count = Mathf.CeilToInt(dist / step);
+
+        for (int i = 0; i <= count; i++)
         {
-            float t = i / (float)steps;
-            Vector2 point = Vector2.Lerp(start, end, t);
-            DrawCirclePixels(point, size, color);
+            float t = i / (float)count;
+            Vector2 p = Vector2.Lerp(s.Start, s.End, t);
+            DrawBrushStamp(p, s);
         }
     }
 
-    void DrawCirclePixels(Vector2 center, int size, Color color)
+    void DrawBrushStamp(Vector2 pos, Stroke s)
     {
-        int cx = (int)center.x;
-        int cy = (int)center.y;
-        color.a = 1f;
+        int cx = (int)pos.x;
+        int cy = (int)pos.y;
+        int r = s.brushSize;
 
-        int sqrSize = size * size;
-        for (int x = -size; x <= size; x++)
+        for (int x = -r; x <= r; x++)
+        for (int y = -r; y <= r; y++)
         {
-            for (int y = -size; y <= size; y++)
-            {
-                if (x * x + y * y > sqrSize) continue;
+            int px = cx + x;
+            int py = cy + y;
+            if (px < 0 || py < 0 || px >= totalPixelsX || py >= totalPixelsY)
+                continue;
 
-                int px = cx + x;
-                int py = cy + y;
-                if (px >= 0 && px < totalPixelsX && py >= 0 && py < totalPixelsY)
-                    generatedTexture.SetPixel(px, py, color);
+            float d = s.shape switch
+            {
+                BrushShape.Circle => Mathf.Sqrt(x * x + y * y) / r,
+                BrushShape.Square => Mathf.Max(Mathf.Abs(x), Mathf.Abs(y)) / r,
+                BrushShape.Diamond => (Mathf.Abs(x) + Mathf.Abs(y)) / r,
+                BrushShape.Calligraphy => CalligraphyDistance(x, y, r, s),
+                _ => 1f
+            };
+
+            if (d > 1f) continue;
+
+            float falloff = Mathf.Pow(1f - d, s.hardness * 4f);
+            float a = falloff * s.opacity;
+
+            if (s.isEraser)
+            {
+                // Only erase pixels with alpha > 0
+                Color dst = generatedTexture.GetPixel(px, py);
+                if (dst.a > 0f)
+                    generatedTexture.SetPixel(px, py, Color.clear);
+            }
+            else
+            {
+                Color dst = generatedTexture.GetPixel(px, py);
+                Color outCol = Color.Lerp(dst, s.Color, a);
+                generatedTexture.SetPixel(px, py, outCol);
             }
         }
     }
 
-    private void ClearCanvasVisual()
+    float CalligraphyDistance(int x, int y, int r, Stroke s)
     {
-        Color clearColor = Color.white;
-        clearColor.a = 1f;
+        float rad = s.angle * Mathf.Deg2Rad;
+        float cos = Mathf.Cos(rad);
+        float sin = Mathf.Sin(rad);
 
+        float rx = (x * cos - y * sin) / r;
+        float ry = (x * sin + y * cos) / (r * s.aspectRatio);
+
+        return Mathf.Sqrt(rx * rx + ry * ry);
+    }
+
+    void FloodFill(int x, int y, Color target, Color replacement)
+    {
+        if (target == replacement) return;
+
+        Stack<Vector2Int> stack = new Stack<Vector2Int>();
+        stack.Push(new Vector2Int(x, y));
+
+        while (stack.Count > 0)
+        {
+            var p = stack.Pop();
+            if (p.x < 0 || p.y < 0 || p.x >= totalPixelsX || p.y >= totalPixelsY)
+                continue;
+
+            if (generatedTexture.GetPixel(p.x, p.y) != target)
+                continue;
+
+            generatedTexture.SetPixel(p.x, p.y, replacement);
+
+            stack.Push(p + Vector2Int.up);
+            stack.Push(p + Vector2Int.down);
+            stack.Push(p + Vector2Int.left);
+            stack.Push(p + Vector2Int.right);
+        }
+    }
+
+    void ClearCanvasVisual()
+    {
         Color[] fill = new Color[totalPixelsX * totalPixelsY];
         for (int i = 0; i < fill.Length; i++)
-            fill[i] = clearColor;
+            fill[i] = Color.white;
 
         generatedTexture.SetPixels(fill);
         generatedTexture.Apply();
     }
 
-    // CLEAR CURRENT CHARACTER ONLY
     public void ClearCanvas()
     {
-        if (currentCharacter != null)
-            currentCharacter.strokes.Clear();
-
+        currentCharacter?.strokes.Clear();
         ClearCanvasVisual();
     }
 
-    // SWITCH ACTIVE CHARACTER
     public void SetCurrentCharacter(CharacterData cd)
     {
         currentCharacter = cd;
-
         if (isReady)
             RedrawFromStrokes();
     }
@@ -192,12 +253,10 @@ public class DrawingManager : MonoBehaviour
     public void RedrawFromStrokes()
     {
         ClearCanvasVisual();
-
-        if (currentCharacter == null)
-            return;
+        if (currentCharacter == null) return;
 
         foreach (Stroke s in currentCharacter.strokes)
-            DrawLinePixels(s.GetStart(), s.GetEnd(), s.brushSize, s.GetColor());
+            DrawStrokePixels(s);
 
         generatedTexture.Apply();
     }
@@ -206,15 +265,70 @@ public class DrawingManager : MonoBehaviour
     {
         brushSize = (int)ProjectSettingsManager.Instance.currentProjectSettings.brushSize;
     }
+    
 
+    // ===========================
+    // Brush setters (UI -> PS -> DM)
+    // ===========================
+
+    public void SetTool(ToolType tool)
+    {
+        ProjectSettingsManager.Instance.currentProjectSettings.currentTool = tool;
+        currentTool = ProjectSettingsManager.Instance.currentProjectSettings.currentTool;
+    }
+
+    public void SetBrushShape(BrushShape shape)
+    {
+        ProjectSettingsManager.Instance.currentProjectSettings.brushShape = shape;
+        brushShape = ProjectSettingsManager.Instance.currentProjectSettings.brushShape;
+        
+        brushCursor?.RebuildCursor();
+    }
+
+    public void SetBrushSize(int size)
+    {
+        ProjectSettingsManager.Instance.currentProjectSettings.brushSize = size;
+        brushSize = ProjectSettingsManager.Instance.currentProjectSettings.brushSize;
+        
+        brushCursor?.RebuildCursor();
+    }
+
+    public void SetOpacity(float value)
+    {
+        ProjectSettingsManager.Instance.currentProjectSettings.brushOpacity = Mathf.Clamp01(value);
+        opacity = ProjectSettingsManager.Instance.currentProjectSettings.brushOpacity;
+    }
+
+    public void SetHardness(float value)
+    {
+        ProjectSettingsManager.Instance.currentProjectSettings.brushHardness = Mathf.Clamp01(value);
+        hardness = ProjectSettingsManager.Instance.currentProjectSettings.brushHardness;
+    }
+
+    public void SetSpacing(float value)
+    {
+        ProjectSettingsManager.Instance.currentProjectSettings.brushSpacing = Mathf.Clamp01(value);
+        spacing = ProjectSettingsManager.Instance.currentProjectSettings.brushSpacing;
+    }
+
+    public void SetCalligraphyAngle(float angle)
+    {
+        ProjectSettingsManager.Instance.currentProjectSettings.calligraphyAngle = angle;
+        calligraphyAngle = ProjectSettingsManager.Instance.currentProjectSettings.calligraphyAngle;
+        
+        brushCursor?.RebuildCursor();
+    }
+
+    public void SetCalligraphyAspect(float aspect)
+    {
+        ProjectSettingsManager.Instance.currentProjectSettings.calligraphyAspect = Mathf.Clamp01(aspect);
+        calligraphyAspect = ProjectSettingsManager.Instance.currentProjectSettings.calligraphyAspect;
+        
+        brushCursor?.RebuildCursor();
+    }
+    
     public static void UpdateBrushColor()
     {
-        string colorString = ProjectSettingsManager.Instance.currentProjectSettings.brushColor;
-
-        Color parsedColor;
-        if (ColorUtility.TryParseHtmlString(colorString, out parsedColor))
-            brushColor = parsedColor;
-        else
-            brushColor = Color.black;
+        string hex = ProjectSettingsManager.Instance.currentProjectSettings.brushColor; if (ColorUtility.TryParseHtmlString(hex, out Color c)) brushColor = c;
     }
 }

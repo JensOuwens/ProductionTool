@@ -16,7 +16,6 @@ public class ProjectSettingsManager : MonoBehaviour
 
     [SerializeField] private TMP_InputField ProjectNameInputField;
     [SerializeField] private ColorPicker BrushColorInputField;
-    [SerializeField] private TMP_InputField BrushSizeInputField;
 
     private void Awake()
     {
@@ -30,10 +29,11 @@ public class ProjectSettingsManager : MonoBehaviour
         
         currentProjectSettings.brushSize = 4;
 
+        currentProjectSettings.currentTool = ToolType.Brush;
+
         // Subscribe to value changed events
         ProjectNameInputField.onValueChanged.AddListener(ChangeProjectName);
         BrushColorInputField.onValueChanged.AddListener(ChangeBrushColor);
-        BrushSizeInputField.onValueChanged.AddListener(ChangeBrushSize);
     }
 
     private void OnDestroy()
@@ -41,7 +41,6 @@ public class ProjectSettingsManager : MonoBehaviour
         // Unsubscribe from all events
         ProjectNameInputField.onValueChanged.RemoveAllListeners();
         BrushColorInputField.onValueChanged.RemoveAllListeners();
-        BrushSizeInputField.onValueChanged.RemoveAllListeners();
     }
 
 // Your existing methods remain unchanged
@@ -58,20 +57,6 @@ public class ProjectSettingsManager : MonoBehaviour
         DrawingManager.UpdateBrushColor();
     }
 
-    private void ChangeBrushSize(string newText)
-    {
-        if (int.TryParse(newText, out int parsedValue))
-        {
-            currentProjectSettings.brushSize = parsedValue;
-            DrawingManager.UpdateBrushSize();
-        }
-        else
-        {
-            // Handle invalid input gracefully
-            currentProjectSettings.brushSize = 0; // Default value
-        }
-    }
-
 
 
     public ProjectSettings GetProjectSettings()
@@ -82,7 +67,6 @@ public class ProjectSettingsManager : MonoBehaviour
     public void DisplayProjectSettings()
     {
         ProjectNameInputField.text = currentProjectSettings.projectName;
-        BrushSizeInputField.text = currentProjectSettings.brushSize.ToString();
         Color parsedColor;
         if (ColorUtility.TryParseHtmlString(currentProjectSettings.brushColor, out parsedColor))
         {
@@ -92,7 +76,6 @@ public class ProjectSettingsManager : MonoBehaviour
         {
             Debug.LogWarning("Failed to parse brush color: " + currentProjectSettings.brushColor);
             BrushColorInputField.CurrentColor = Color.black; // fallback
-            BrushSizeInputField.text = currentProjectSettings.brushSize.ToString();
         }
     }
 }

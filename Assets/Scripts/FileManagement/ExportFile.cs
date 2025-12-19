@@ -39,12 +39,7 @@ public class ExportFile : MonoBehaviour
         int cols = Mathf.CeilToInt(Mathf.Sqrt(count));
         int rows = Mathf.CeilToInt(count / (float)cols);
 
-        Texture2D atlas = new Texture2D(
-            cols * GLYPH_SIZE,
-            rows * GLYPH_SIZE,
-            TextureFormat.RGBA32,
-            false
-        );
+        Texture2D atlas = new Texture2D(cols * GLYPH_SIZE, rows * GLYPH_SIZE, TextureFormat.RGBA32, false);
 
         Clear(atlas);
 
@@ -84,16 +79,10 @@ public class ExportFile : MonoBehaviour
 
         atlas.Apply();
 
-        File.WriteAllBytes(
-            Path.Combine(folder, ps.projectName + "_Atlas.png"),
-            atlas.EncodeToPNG()
-        );
+        File.WriteAllBytes(Path.Combine(folder, ps.projectName + "_Atlas.png"), atlas.EncodeToPNG());
 
         string json = JsonUtility.ToJson(meta, true);
-        File.WriteAllText(
-            Path.Combine(folder, ps.projectName + "_Font.json"),
-            json
-        );
+        File.WriteAllText(Path.Combine(folder, ps.projectName + "_Font.json"), json);
 
         Debug.Log("Atlas and metadata exported");
     }
@@ -110,6 +99,79 @@ public class ExportFile : MonoBehaviour
 
         tex.Apply();
         return tex;
+    }
+
+    void DrawStroke(Texture2D tex, Stroke s)
+    {
+        Vector2 a = Normalize(s.Start);
+        Vector2 b = Normalize(s.End);
+
+        float dist = Vector2.Distance(a, b);
+        float step = Mathf.Max(1f, s.brushSize * s.spacing);
+        int count = Mathf.CeilToInt(dist / step);
+
+        for (int i = 0; i <= count; i++)
+        {
+            float t = i / (float)count;
+            Vector2 p = Vector2.Lerp(a, b, t);
+            DrawBrushStamp(tex, p, s);
+        }
+    }
+
+    void DrawBrushStamp(Texture2D tex, Vector2 pos, Stroke s)
+    {
+        int cx = (int)pos.x;
+        int cy = (int)pos.y;
+        int r = s.brushSize;
+
+        for (int x = -r; x <= r; x++)
+        for (int y = -r; y <= r; y++)
+        {
+            int px = cx + x;
+            int py = cy + y;
+            if (px < 0 || py < 0 || px >= tex.width || py >= tex.height)
+                continue;
+
+            float d = s.shape switch
+            {
+                BrushShape.Circle => Mathf.Sqrt(x * x + y * y) / r,
+                BrushShape.Square => Mathf.Max(Mathf.Abs(x), Mathf.Abs(y)) / r,
+                BrushShape.Diamond => (Mathf.Abs(x) + Mathf.Abs(y)) / r,
+                BrushShape.Calligraphy => CalligraphyDistance(x, y, r, s),
+                _ => 1f
+            };
+
+            if (d > 1f) continue;
+
+            float falloff = Mathf.Pow(1f - d, s.hardness * 4f);
+            float a = falloff * s.opacity;
+
+            if (s.isEraser)
+            {
+                // Apply eraser: remove existing pixels
+                Color dst = tex.GetPixel(px, py);
+                if (dst.a > 0f)
+                    tex.SetPixel(px, py, Color.clear);
+            }
+            else
+            {
+                Color dst = tex.GetPixel(px, py);
+                Color outCol = Color.Lerp(dst, s.Color, a);
+                tex.SetPixel(px, py, outCol);
+            }
+        }
+    }
+
+    float CalligraphyDistance(int x, int y, int r, Stroke s)
+    {
+        float rad = s.angle * Mathf.Deg2Rad;
+        float cos = Mathf.Cos(rad);
+        float sin = Mathf.Sin(rad);
+
+        float rx = (x * cos - y * sin) / r;
+        float ry = (x * sin + y * cos) / (r * s.aspectRatio);
+
+        return Mathf.Sqrt(rx * rx + ry * ry);
     }
 
     RectInt ComputeBounds(Texture2D tex)
@@ -137,39 +199,9 @@ public class ExportFile : MonoBehaviour
         return new RectInt(minX, minY, maxX - minX + 1, maxY - minY + 1);
     }
 
-    void DrawStroke(Texture2D tex, Stroke s)
-    {
-        Vector2 a = Normalize(s.GetStart());
-        Vector2 b = Normalize(s.GetEnd());
-
-        int steps = Mathf.CeilToInt(Vector2.Distance(a, b));
-        for (int i = 0; i <= steps; i++)
-        {
-            float t = i / (float)steps;
-            Vector2 p = Vector2.Lerp(a, b, t);
-            DrawCircle(tex, (int)p.x, (int)p.y, s.brushSize, s.GetColor());
-        }
-    }
-
     Vector2 Normalize(Vector2 p)
     {
-        return new Vector2(
-            p.x / SOURCE_W * GLYPH_SIZE,
-            p.y / SOURCE_H * GLYPH_SIZE
-        );
-    }
-
-    void DrawCircle(Texture2D tex, int cx, int cy, int r, Color col)
-    {
-        for (int x = -r; x <= r; x++)
-        for (int y = -r; y <= r; y++)
-        {
-            if (x * x + y * y > r * r) continue;
-            int px = cx + x;
-            int py = cy + y;
-            if (px >= 0 && px < tex.width && py >= 0 && py < tex.height)
-                tex.SetPixel(px, py, col);
-        }
+        return new Vector2(p.x / SOURCE_W * GLYPH_SIZE, p.y / SOURCE_H * GLYPH_SIZE);
     }
 
     void Clear(Texture2D tex)

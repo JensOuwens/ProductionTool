@@ -3,17 +3,13 @@ using System.Xml.Serialization;
 using UnityEngine;
 using SFB;
 using TMPro;
-/// <summary>
-/// TODO
-/// make new start template with all charachters
-/// load all charachters (call charactercollectionmanager)
-/// </summary>
+
 public class NewFile : MonoBehaviour
 {
     [SerializeField] private TMP_Text outputText;
 
     private OpenFile openFile;
-    private XmlSerializer xmlSerializer = new XmlSerializer(typeof(ProjectSettings));
+    private XmlSerializer xmlSerializer = new(typeof(ProjectSettings));
 
     private void Awake()
     {
@@ -30,29 +26,41 @@ public class NewFile : MonoBehaviour
 
         ProjectSettings ps = new ProjectSettings
         {
-            projectName = "NewProject",
-            brushColor = "#000000",
-            brushSize = 0
+            projectName = "NewProject"
         };
 
-        // CREATE ALL CHARACTERS
         CharacterDefaults.EnsureCharacters(ps);
-        
-        FindObjectOfType<CharachterCollectionManager>()
-            .LoadCharachtersIntoCollection();
 
-        using (FileStream stream = new FileStream(path, FileMode.Create))
-        {
+        using (FileStream stream = new(path, FileMode.Create))
             xmlSerializer.Serialize(stream, ps);
-        }
 
         openFile.CurrentFilePath = path;
         ProjectSettingsManager.Instance.currentProjectSettings = ps;
 
+        ApplyBrushSettings(ps);
+
         FindObjectOfType<DrawingManager>()
             .SetCurrentCharacter(ps.characters[0]);
 
+        FindObjectOfType<CharachterCollectionManager>()
+            .LoadCharachtersIntoCollection();
+
         ProjectSettingsManager.Instance.DisplayProjectSettings();
         outputText.text = "File Created!";
+    }
+
+    void ApplyBrushSettings(ProjectSettings ps)
+    {
+        DrawingManager.brushSize = ps.brushSize;
+        DrawingManager.opacity = ps.brushOpacity;
+        DrawingManager.hardness = ps.brushHardness;
+        DrawingManager.spacing = ps.brushSpacing;
+        DrawingManager.brushShape = ps.brushShape;
+        DrawingManager.currentTool = ps.currentTool;
+        DrawingManager.calligraphyAngle = ps.calligraphyAngle;
+        DrawingManager.calligraphyAspect = ps.calligraphyAspect;
+
+        if (ColorUtility.TryParseHtmlString(ps.brushColor, out Color c))
+            DrawingManager.brushColor = c;
     }
 }
