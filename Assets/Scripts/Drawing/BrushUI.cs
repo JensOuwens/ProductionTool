@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class RebuildCursor : MonoBehaviour
+public class BrushUI : MonoBehaviour
 {
     [SerializeField] private DrawingManager drawingManager;
 
@@ -17,116 +17,160 @@ public class RebuildCursor : MonoBehaviour
     [SerializeField] private Button diamondSelector;
     [SerializeField] private Button calligraphySelector;
 
-    [Header("Sliders and their parent GameObjects")]
-    [SerializeField] private Slider brushSizeSlider;
+    [Header("Input Fields")]
+    [SerializeField] private TMP_InputField brushSizeInput;
     [SerializeField] private GameObject brushSizeText;
 
-    [SerializeField] private Slider opacitySlider;
+    [SerializeField] private TMP_InputField opacityInput;
     [SerializeField] private GameObject opacityText;
 
-    [SerializeField] private Slider hardnessSlider;
+    [SerializeField] private TMP_InputField hardnessInput;
     [SerializeField] private GameObject hardnessText;
 
-    [SerializeField] private Slider spacingSlider;
+    [SerializeField] private TMP_InputField spacingInput;
     [SerializeField] private GameObject spacingText;
 
-    [SerializeField] private Slider calligraphyAngleSlider;
+    [SerializeField] private TMP_InputField calligraphyAngleInput;
     [SerializeField] private GameObject calligraphyAngleText;
 
-    [SerializeField] private Slider calligraphyAspectSlider;
+    [SerializeField] private TMP_InputField calligraphyAspectInput;
     [SerializeField] private GameObject calligraphyAspectText;
-    
+
     private void Awake()
     {
-        // Tool buttons
         brushSelector.onClick.AddListener(() => { drawingManager.SetTool(ToolType.Brush); UpdateVisibleSettings(); });
         eraserSelector.onClick.AddListener(() => { drawingManager.SetTool(ToolType.Eraser); UpdateVisibleSettings(); });
         fillSelector.onClick.AddListener(() => { drawingManager.SetTool(ToolType.Fill); UpdateVisibleSettings(); });
 
-        // Shape buttons
         circleSelector.onClick.AddListener(() => { drawingManager.SetBrushShape(BrushShape.Circle); UpdateVisibleSettings(); });
         squareSelector.onClick.AddListener(() => { drawingManager.SetBrushShape(BrushShape.Square); UpdateVisibleSettings(); });
         diamondSelector.onClick.AddListener(() => { drawingManager.SetBrushShape(BrushShape.Diamond); UpdateVisibleSettings(); });
         calligraphySelector.onClick.AddListener(() => { drawingManager.SetBrushShape(BrushShape.Calligraphy); UpdateVisibleSettings(); });
 
-        // Sliders
-        brushSizeSlider.onValueChanged.AddListener(val => drawingManager.SetBrushSize(Mathf.RoundToInt(val)));
-        opacitySlider.onValueChanged.AddListener(drawingManager.SetOpacity);
-        hardnessSlider.onValueChanged.AddListener(drawingManager.SetHardness);
-        spacingSlider.onValueChanged.AddListener(drawingManager.SetSpacing);
-        calligraphyAngleSlider.onValueChanged.AddListener(drawingManager.SetCalligraphyAngle);
-        calligraphyAspectSlider.onValueChanged.AddListener(drawingManager.SetCalligraphyAspect);
+        RegisterBrushSizeInput();
+        RegisterPercentInput(opacityInput, drawingManager.SetOpacity);
+        RegisterPercentInput(hardnessInput, drawingManager.SetHardness);
+        RegisterPercentInput(spacingInput, drawingManager.SetSpacing);
+        RegisterDegreeInput(calligraphyAngleInput, drawingManager.SetCalligraphyAngle);
+        RegisterPercentInput(calligraphyAspectInput, drawingManager.SetCalligraphyAspect);
     }
-    
+
     private void Start()
     {
         UpdateVisibleSettings();
     }
+    
+    public void RefreshFromProjectSettings()
+    {
+        UpdateVisibleSettings();
+    }
 
-private void UpdateVisibleSettings()
-{
-    var ps = ProjectSettingsManager.Instance.currentProjectSettings;
+    private void RegisterBrushSizeInput()
+    {
+        brushSizeInput.onEndEdit.AddListener(text =>
+        {
+            if (!int.TryParse(text, out int value))
+                return;
 
-    ToolType currentTool = ps.currentTool;
-    BrushShape currentShape = ps.brushShape;
+            value = Mathf.Clamp(value, 1, 512);
+            brushSizeInput.text = value.ToString();
+            drawingManager.SetBrushSize(value);
+        });
+    }
 
-    // Show/hide shape buttons
-    bool showShapes = currentTool != ToolType.Fill;
-    circleSelector.gameObject.SetActive(showShapes);
-    squareSelector.gameObject.SetActive(showShapes);
-    diamondSelector.gameObject.SetActive(showShapes);
-    calligraphySelector.gameObject.SetActive(showShapes);
+    private void RegisterPercentInput(
+        TMP_InputField input,
+        System.Action<float> onValueChanged)
+    {
+        input.text = "100";
 
-    // Show/hide sliders + set slider values to current settings
-    SetSliderVisibility(brushSizeSlider, brushSizeText, currentTool != ToolType.Fill);
-    if (brushSizeSlider.gameObject.activeSelf)
-        brushSizeSlider.value = ps.brushSize;
+        input.onEndEdit.AddListener(text =>
+        {
+            if (!int.TryParse(text, out int value))
+                return;
 
-    SetSliderVisibility(opacitySlider, opacityText, currentTool == ToolType.Brush || currentTool == ToolType.Eraser);
-    if (opacitySlider.gameObject.activeSelf)
-        opacitySlider.value = ps.brushOpacity;
+            value = Mathf.Clamp(value, 1, 100);
+            input.text = value.ToString();
+            onValueChanged(value / 100f);
+        });
+    }
 
-    SetSliderVisibility(hardnessSlider, hardnessText, currentTool == ToolType.Brush || currentTool == ToolType.Eraser);
-    if (hardnessSlider.gameObject.activeSelf)
-        hardnessSlider.value = ps.brushHardness;
+    private void RegisterDegreeInput(
+        TMP_InputField input,
+        System.Action<float> onValueChanged)
+    {
+        input.text = "0";
 
-    SetSliderVisibility(spacingSlider, spacingText, currentTool == ToolType.Brush || currentTool == ToolType.Eraser);
-    if (spacingSlider.gameObject.activeSelf)
-        spacingSlider.value = ps.brushSpacing;
+        input.onEndEdit.AddListener(text =>
+        {
+            if (!float.TryParse(text, out float value))
+                return;
 
-    bool isCalligraphy = currentShape == BrushShape.Calligraphy;
-    SetSliderVisibility(calligraphyAngleSlider, calligraphyAngleText, isCalligraphy);
-    if (calligraphyAngleSlider.gameObject.activeSelf)
-        calligraphyAngleSlider.value = ps.calligraphyAngle;
+            value = Mathf.Clamp(value, 0f, 360f);
+            input.text = Mathf.RoundToInt(value).ToString();
+            onValueChanged(value);
+        });
+    }
 
-    SetSliderVisibility(calligraphyAspectSlider, calligraphyAspectText, isCalligraphy);
-    if (calligraphyAspectSlider.gameObject.activeSelf)
-        calligraphyAspectSlider.value = ps.calligraphyAspect;
-}
+    private void UpdateVisibleSettings()
+    {
+        var ps = ProjectSettingsManager.Instance.currentProjectSettings;
 
-private void SetSliderVisibility(Slider slider, GameObject go, bool visible)
-{
-    slider.gameObject.SetActive(visible);
-    go.SetActive(visible);
-}
+        ToolType tool = ps.currentTool;
+        BrushShape shape = ps.brushShape;
 
+        bool showShapes = tool != ToolType.Fill;
+        circleSelector.gameObject.SetActive(showShapes);
+        squareSelector.gameObject.SetActive(showShapes);
+        diamondSelector.gameObject.SetActive(showShapes);
+        calligraphySelector.gameObject.SetActive(showShapes);
 
-    // --- Brush type selection ---
-    public void SelectBrush() => drawingManager.SetTool(ToolType.Brush);
-    public void SelectEraser() => drawingManager.SetTool(ToolType.Eraser);
-    public void SelectFill() => drawingManager.SetTool(ToolType.Fill);
+        SetField(brushSizeInput, brushSizeText, tool != ToolType.Fill, ps.brushSize);
+        SetPercentField(opacityInput, opacityText, tool != ToolType.Fill, ps.brushOpacity);
+        SetPercentField(hardnessInput, hardnessText, tool != ToolType.Fill, ps.brushHardness);
+        SetPercentField(spacingInput, spacingText, tool != ToolType.Fill, ps.brushSpacing);
 
-    // --- Brush shape selection ---
-    public void SelectCircle() => drawingManager.SetBrushShape(BrushShape.Circle);
-    public void SelectSquare() => drawingManager.SetBrushShape(BrushShape.Square);
-    public void SelectDiamond() => drawingManager.SetBrushShape(BrushShape.Diamond);
-    public void SelectCalligraphy() => drawingManager.SetBrushShape(BrushShape.Calligraphy);
+        bool isCalligraphy = shape == BrushShape.Calligraphy;
+        SetDegreeField(calligraphyAngleInput, calligraphyAngleText, isCalligraphy, ps.calligraphyAngle);
+        SetPercentField(calligraphyAspectInput, calligraphyAspectText, isCalligraphy, ps.calligraphyAspect);
+    }
 
-    // --- Slider setters ---
-    public void SetBrushSize(float value) => drawingManager.SetBrushSize(Mathf.RoundToInt(value));
-    public void SetOpacity(float value) => drawingManager.SetOpacity(value);
-    public void SetHardness(float value) => drawingManager.SetHardness(value);
-    public void SetSpacing(float value) => drawingManager.SetSpacing(value);
-    public void SetCalligraphyAngle(float value) => drawingManager.SetCalligraphyAngle(value);
-    public void SetCalligraphyAspect(float value) => drawingManager.SetCalligraphyAspect(value);
+    private void SetField(
+        TMP_InputField input,
+        GameObject label,
+        bool visible,
+        int value)
+    {
+        input.gameObject.SetActive(visible);
+        label.SetActive(visible);
+
+        if (visible)
+            input.text = value.ToString();
+    }
+
+    private void SetPercentField(
+        TMP_InputField input,
+        GameObject label,
+        bool visible,
+        float value)
+    {
+        input.gameObject.SetActive(visible);
+        label.SetActive(visible);
+
+        if (visible)
+            input.text = Mathf.RoundToInt(value * 100f).ToString();
+    }
+
+    private void SetDegreeField(
+        TMP_InputField input,
+        GameObject label,
+        bool visible,
+        float value)
+    {
+        input.gameObject.SetActive(visible);
+        label.SetActive(visible);
+
+        if (visible)
+            input.text = Mathf.RoundToInt(value).ToString();
+    }
 }

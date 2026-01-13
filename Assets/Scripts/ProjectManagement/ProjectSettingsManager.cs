@@ -68,6 +68,7 @@ public class ProjectSettingsManager : MonoBehaviour
     {
         ProjectNameInputField.text = currentProjectSettings.projectName;
         Color parsedColor;
+        FindObjectOfType<BrushUI>().RefreshFromProjectSettings();
         if (ColorUtility.TryParseHtmlString(currentProjectSettings.brushColor, out parsedColor))
         {
             BrushColorInputField.CurrentColor = parsedColor;
