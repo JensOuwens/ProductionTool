@@ -81,9 +81,15 @@ public class CharachterCollectionManager : MonoBehaviour
         // UPDATE DRAWING MANAGER
         drawingManager.SetCurrentCharacter(characterData);
 
+        // REBUILD UNDO/REDO STACK FOR THIS CHARACTER
+        drawingManager.LoadCharacterHistory(characterData);
+
         // UPDATE UI TEXT
         if (currentCharacterText != null)
             currentCharacterText.text = characterData.character;
     }
+
+    
+    
 
 }

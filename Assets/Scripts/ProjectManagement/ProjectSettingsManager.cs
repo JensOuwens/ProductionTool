@@ -54,9 +54,11 @@ public class ProjectSettingsManager : MonoBehaviour
         string hexColor = ColorUtility.ToHtmlStringRGB(newColor);
         currentProjectSettings.brushColor = "#" + hexColor;
 
-        DrawingManager.UpdateBrushColor();
+        // Updated for new DrawingManager brush system
+        DrawingManager.brushColor = newColor; 
     }
 
+    
 
 
     public ProjectSettings GetProjectSettings()

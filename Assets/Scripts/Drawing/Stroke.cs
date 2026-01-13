@@ -1,20 +1,12 @@
-using UnityEngine;
-using UnityEngine.UI;
-using System.Collections.Generic;
-
 using System;
+using System.Collections.Generic;
+using UnityEngine;
 
-
-/// <summary>
-/// TODO
-/// once more brushes/settings are added, make sure to add updates
-/// add drawing different shapes (square, circle, straight line) (different script?)
-/// </summary>
 [Serializable]
+
 public class Stroke
 {
-    public float startX, startY;
-    public float endX, endY;
+    public List<Vector2> points = new List<Vector2>();
 
     public int brushSize;
     public float opacity;
@@ -29,30 +21,14 @@ public class Stroke
 
     public float r, g, b, a;
 
-    // XML
-    public Stroke()
-    {
-    }
+    public Color color => new(r, g, b, a);
 
-    public Stroke(
-        Vector2 start,
-        Vector2 end,
-        int size,
-        Color col,
-        float opacity,
-        float hardness,
-        float spacing,
-        BrushShape shape,
-        bool eraser,
-        float angle,
-        float aspectRatio
-    )
-    {
-        startX = start.x;
-        startY = start.y;
-        endX = end.x;
-        endY = end.y;
+    public Stroke() { }
 
+    public Stroke(Vector2 start, int size, Color col, float opacity, float hardness,
+        float spacing, BrushShape shape, bool eraser, float angle, float aspectRatio)
+    {
+        points.Add(start);
         brushSize = size;
         this.opacity = opacity;
         this.hardness = hardness;
@@ -68,7 +44,8 @@ public class Stroke
         a = col.a;
     }
 
-    public Vector2 Start => new(startX, startY);
-    public Vector2 End => new(endX, endY);
-    public Color Color => new(r, g, b, a);
+    public void AddPoint(Vector2 point)
+    {
+        points.Add(point);
+    }
 }

@@ -103,17 +103,25 @@ public class ExportFile : MonoBehaviour
 
     void DrawStroke(Texture2D tex, Stroke s)
     {
-        Vector2 a = Normalize(s.Start);
-        Vector2 b = Normalize(s.End);
+        if (s.points.Count < 2) return;
 
-        float dist = Vector2.Distance(a, b);
+        for (int i = 1; i < s.points.Count; i++)
+        {
+            Vector2 a = Normalize(s.points[i - 1]);
+            Vector2 b = Normalize(s.points[i]);
+            DrawLinePixels(tex, a, b, s);
+        }
+    }
+
+    void DrawLinePixels(Texture2D tex, Vector2 start, Vector2 end, Stroke s)
+    {
+        float dist = Vector2.Distance(start, end);
         float step = Mathf.Max(1f, s.brushSize * s.spacing);
         int count = Mathf.CeilToInt(dist / step);
 
         for (int i = 0; i <= count; i++)
         {
-            float t = i / (float)count;
-            Vector2 p = Vector2.Lerp(a, b, t);
+            Vector2 p = Vector2.Lerp(start, end, i / (float)count);
             DrawBrushStamp(tex, p, s);
         }
     }
@@ -148,7 +156,6 @@ public class ExportFile : MonoBehaviour
 
             if (s.isEraser)
             {
-                // Apply eraser: remove existing pixels
                 Color dst = tex.GetPixel(px, py);
                 if (dst.a > 0f)
                     tex.SetPixel(px, py, Color.clear);
@@ -156,7 +163,7 @@ public class ExportFile : MonoBehaviour
             else
             {
                 Color dst = tex.GetPixel(px, py);
-                Color outCol = Color.Lerp(dst, s.Color, a);
+                Color outCol = Color.Lerp(dst, s.color, a);
                 tex.SetPixel(px, py, outCol);
             }
         }
