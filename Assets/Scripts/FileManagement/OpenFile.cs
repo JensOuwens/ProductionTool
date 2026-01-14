@@ -41,6 +41,10 @@ public class OpenFile : MonoBehaviour
 
         FindObjectOfType<CharachterCollectionManager>()
             .LoadCharachtersIntoCollection();
+        
+        FindObjectOfType<EnableCanvasOnLoad>()
+            .EnableCanvases();
+
 
         ProjectSettingsManager.Instance.DisplayProjectSettings();
         outputText.text = "File opened!";

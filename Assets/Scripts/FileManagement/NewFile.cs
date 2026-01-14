@@ -44,6 +44,10 @@ public class NewFile : MonoBehaviour
 
         FindObjectOfType<CharachterCollectionManager>()
             .LoadCharachtersIntoCollection();
+        
+        FindObjectOfType<EnableCanvasOnLoad>()
+            .EnableCanvases();
+
 
         ProjectSettingsManager.Instance.DisplayProjectSettings();
         outputText.text = "File Created!";
