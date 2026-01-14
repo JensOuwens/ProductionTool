@@ -2,11 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-/// <summary>
-/// TODO
-/// load all charachters into the collection
-/// switch between different letters
-/// </summary>
 
 public class CharachterCollectionManager : MonoBehaviour
 {
@@ -25,16 +20,16 @@ public class CharachterCollectionManager : MonoBehaviour
 
     public void LoadCharachtersIntoCollection()
     {
-        // CLEAR OLD BUTTONS
+
         foreach (Transform child in CharachterCollectionContent.transform)
             Destroy(child.gameObject);
 
         ProjectSettings ps = ProjectSettingsManager.Instance.currentProjectSettings;
 
-        // SAFETY
+
         CharacterDefaults.EnsureCharacters(ps);
 
-        // CREATE BUTTON FOR EACH CHARACTER
+
         foreach (CharacterData cd in ps.characters)
         {
             GameObject btnObj =
@@ -52,7 +47,7 @@ public class CharachterCollectionManager : MonoBehaviour
             });
         }
         
-        // RESTORE LAST CHARACTER
+
         CharacterData startChar = null;
 
         if (!string.IsNullOrEmpty(ps.currentCharacter))
@@ -61,11 +56,11 @@ public class CharachterCollectionManager : MonoBehaviour
                 .Find(c => c.character == ps.currentCharacter);
         }
 
-        // FALLBACK
+
         if (startChar == null && ps.characters.Count > 0)
             startChar = ps.characters[0];
 
-        // APPLY
+
         if (startChar != null)
             OnCharacterSelected(startChar);
 
@@ -75,16 +70,16 @@ public class CharachterCollectionManager : MonoBehaviour
     {
         ProjectSettings ps = ProjectSettingsManager.Instance.currentProjectSettings;
 
-        // SAVE CURRENT CHARACTER
+
         ps.currentCharacter = characterData.character;
 
-        // UPDATE DRAWING MANAGER
+
         drawingManager.SetCurrentCharacter(characterData);
 
-        // REBUILD UNDO/REDO STACK FOR THIS CHARACTER
+
         drawingManager.LoadCharacterHistory(characterData);
 
-        // UPDATE UI TEXT
+
         if (currentCharacterText != null)
             currentCharacterText.text = characterData.character;
     }

@@ -42,7 +42,7 @@ public class OpenFile : MonoBehaviour
                 drawingManager.totalPixelsY,
                 TextureFormat.RGBA32, false);
 
-            // Render the character into the texture
+
             drawingManager.RenderCharacterToTexture(ch);
         }
 

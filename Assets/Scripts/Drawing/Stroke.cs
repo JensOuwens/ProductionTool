@@ -13,11 +13,12 @@ public class Stroke
     public float hardness;
     public float spacing;
 
+    public bool isFill;
     public BrushShape shape;
     public bool isEraser;
 
-    public float angle; // calligraphy
-    public float aspectRatio; // calligraphy
+    public float angle; 
+    public float aspectRatio;
 
     public float r, g, b, a;
 

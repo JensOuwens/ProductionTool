@@ -36,8 +36,7 @@ public class DrawingManager : MonoBehaviour
     void Start()
     {
         rectTransform = drawImage.rectTransform;
-
-        // If no character is loaded yet, create a blank temp texture
+        
         if (currentCharacter == null)
         {
             generatedTexture = new Texture2D(totalPixelsX, totalPixelsY, TextureFormat.RGBA32, false);
@@ -58,9 +57,7 @@ public class DrawingManager : MonoBehaviour
 
 void DrawFromMouse()
 {
-    if (currentCharacter == null || currentCharacter.cachedTexture == null) return;
-
-    Texture2D tex = currentCharacter.cachedTexture; // <-- all drawing happens here
+    if (currentCharacter == null) return;
 
     Vector2 localPos;
     if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -75,27 +72,28 @@ void DrawFromMouse()
     if (x < 0 || y < 0 || x >= totalPixelsX || y >= totalPixelsY)
         return;
 
-    // ========================
-    // Fill tool
-    // ========================
     if (currentTool == ToolType.Fill && Input.GetMouseButtonDown(0))
     {
-        Color target = tex.GetPixel((int)x, (int)y);
+        Color target = currentCharacter.cachedTexture.GetPixel((int)x, (int)y);
         Color replacement = brushColor;
         replacement.a = opacity;
 
-        FloodFillIntoTexture(tex, (int)x, (int)y, target, replacement);
-        tex.Apply();
+        FloodFill((int)x, (int)y, target, replacement, currentCharacter.cachedTexture);
+        currentCharacter.cachedTexture.Apply();
+        
+        Stroke fillStroke = new Stroke(new Vector2((int)x, (int)y), 0, replacement, opacity, 1f, 1f, BrushShape.Circle, false, 0, 1f);
+        fillStroke.isFill = true; 
+        currentCharacter.strokes.Add(fillStroke);
+        UndoRedoManager.Instance.RegisterStroke(fillStroke);
+
         return;
     }
+
 
     bool isEraser = currentTool == ToolType.Eraser;
     Color col = isEraser ? Color.clear : brushColor;
     col.a = opacity;
-
-    // ========================
-    // Start stroke
-    // ========================
+    
     if (Input.GetMouseButtonDown(0))
     {
         currentStroke = new Stroke(
@@ -110,10 +108,7 @@ void DrawFromMouse()
         lineStart = curPos;
         return;
     }
-
-    // ========================
-    // Continue stroke
-    // ========================
+    
     if (currentStroke != null)
     {
         Vector2 drawTarget = curPos;
@@ -124,9 +119,9 @@ void DrawFromMouse()
         if (Vector2.Distance(drawTarget, lastPos) >= brushSize * spacing)
         {
             currentStroke.AddPoint(drawTarget);
-            DrawLinePixelsIntoTexture(tex, lastPos, drawTarget, currentStroke);
+            DrawLinePixels(lastPos, drawTarget, currentStroke);
             lastPos = drawTarget;
-            tex.Apply();
+            currentCharacter.cachedTexture.Apply();
         }
     }
 
@@ -134,7 +129,7 @@ void DrawFromMouse()
         currentStroke = null;
 }
 
-void FloodFillIntoTexture(Texture2D tex, int x, int y, Color target, Color replacement)
+void FloodFill(int x, int y, Color target, Color replacement, Texture2D tex)
 {
     if (target == replacement) return;
 
@@ -143,7 +138,8 @@ void FloodFillIntoTexture(Texture2D tex, int x, int y, Color target, Color repla
 
     while (stack.Count > 0)
     {
-        var p = stack.Pop();
+        Vector2Int p = stack.Pop();
+
         if (p.x < 0 || p.y < 0 || p.x >= totalPixelsX || p.y >= totalPixelsY)
             continue;
 
@@ -158,9 +154,7 @@ void FloodFillIntoTexture(Texture2D tex, int x, int y, Color target, Color repla
         stack.Push(p + Vector2Int.right);
     }
 }
-    // ========================
-    // Direction snapping
-    // ========================
+
     Vector2 SnapTo8Directions(Vector2 origin, Vector2 current)
     {
         Vector2 delta = current - origin;
@@ -297,14 +291,14 @@ void FloodFillIntoTexture(Texture2D tex, int x, int y, Color target, Color repla
         currentCharacter = cd;
         UndoRedoManager.Instance.OnCharacterSwitched(cd);
 
-        // Load cached texture if available
+
         if (cd.cachedTexture != null)
         {
             drawImage.texture = cd.cachedTexture;
         }
         else
         {
-            // fallback: render strokes into a new texture and cache it
+
             cd.cachedTexture = new Texture2D(totalPixelsX, totalPixelsY, TextureFormat.RGBA32, false);
             RenderCharacterToTexture(cd);
             drawImage.texture = cd.cachedTexture;
@@ -312,7 +306,7 @@ void FloodFillIntoTexture(Texture2D tex, int x, int y, Color target, Color repla
         
         drawImage.texture = cd.cachedTexture;
 
-        // Rebuild the undo/redo history for this character
+
         LoadCharacterHistory(cd);
     }
 
@@ -329,20 +323,20 @@ void FloodFillIntoTexture(Texture2D tex, int x, int y, Color target, Color repla
     {
         if (currentCharacter == null) return;
 
-        // Clear cached texture
+
         Color[] fill = new Color[totalPixelsX * totalPixelsY];
         for (int i = 0; i < fill.Length; i++)
             fill[i] = Color.white;
 
         currentCharacter.cachedTexture.SetPixels(fill);
 
-        // Draw all strokes into cached texture
+
         foreach (var s in currentCharacter.strokes)
             DrawStrokeIntoTexture(currentCharacter.cachedTexture, s);
 
         currentCharacter.cachedTexture.Apply();
 
-        // Assign to display
+
         drawImage.texture = currentCharacter.cachedTexture;
     }
     
@@ -465,7 +459,7 @@ private void DrawBrushStampIntoBuffer(Vector2 pos, Stroke s, Color[] buffer)
         {
             Color dst = buffer[index];
             if (dst.a > 0f)
-                buffer[index] = Color.white; // erase to background
+                buffer[index] = Color.white;
         }
         else
         {

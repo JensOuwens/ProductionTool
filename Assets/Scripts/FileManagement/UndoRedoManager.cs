@@ -4,8 +4,7 @@ using UnityEngine;
 public class UndoRedoManager : MonoBehaviour
 {
     public static UndoRedoManager Instance { get; private set; }
-
-    // Stacks per character
+    
     private Dictionary<string, Stack<Stroke>> undoStacks = new Dictionary<string, Stack<Stroke>>();
     private Dictionary<string, Stack<Stroke>> redoStacks = new Dictionary<string, Stack<Stroke>>();
 
@@ -43,7 +42,7 @@ public class UndoRedoManager : MonoBehaviour
         if (string.IsNullOrEmpty(charKey)) return;
 
         GetUndoStack(charKey).Push(stroke);
-        GetRedoStack(charKey).Clear(); // cannot redo after new action
+        GetRedoStack(charKey).Clear(); 
     }
 
     public void Undo()
@@ -63,7 +62,7 @@ public class UndoRedoManager : MonoBehaviour
         if (character.strokes.Contains(last))
             character.strokes.Remove(last);
 
-        // Update cached texture
+
         drawingManager.RedrawFromStrokes();
     }
 
@@ -83,7 +82,7 @@ public class UndoRedoManager : MonoBehaviour
 
         character.strokes.Add(s);
 
-        // Update cached texture
+
         drawingManager.RedrawFromStrokes();
     }
 
@@ -102,7 +101,7 @@ public class UndoRedoManager : MonoBehaviour
         }
     }
 
-    // Call when switching characters to make sure undo/redo references the right stacks
+
     public void OnCharacterSwitched(CharacterData character)
     {
         string charKey = character?.character;

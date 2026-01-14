@@ -21,8 +21,7 @@ public class SaveFile : MonoBehaviour
             return;
 
         ProjectSettings ps = ProjectSettingsManager.Instance.currentProjectSettings;
-
-        // SYNC RUNTIME BRUSH STATE → PROJECT SETTINGS
+        
         ps.brushSize = DrawingManager.brushSize;
         ps.brushOpacity = DrawingManager.opacity;
         ps.brushHardness = DrawingManager.hardness;

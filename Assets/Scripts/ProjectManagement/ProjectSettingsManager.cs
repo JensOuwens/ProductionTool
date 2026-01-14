@@ -4,10 +4,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
 
-/// <summary>
-/// TODO
-/// once more brushes are added and more settings, add them here too
-/// </summary>
 public class ProjectSettingsManager : MonoBehaviour
 {
     public static ProjectSettingsManager Instance { get; private set; }
@@ -21,7 +17,7 @@ public class ProjectSettingsManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject); // avoid duplicate singletons
+            Destroy(gameObject); 
             return;
         }
 
@@ -31,19 +27,18 @@ public class ProjectSettingsManager : MonoBehaviour
 
         currentProjectSettings.currentTool = ToolType.Brush;
 
-        // Subscribe to value changed events
+
         ProjectNameInputField.onValueChanged.AddListener(ChangeProjectName);
         BrushColorInputField.onValueChanged.AddListener(ChangeBrushColor);
     }
 
     private void OnDestroy()
     {
-        // Unsubscribe from all events
+
         ProjectNameInputField.onValueChanged.RemoveAllListeners();
         BrushColorInputField.onValueChanged.RemoveAllListeners();
     }
 
-// Your existing methods remain unchanged
     private void ChangeProjectName(string newText)
     {
         currentProjectSettings.projectName = newText;
@@ -54,7 +49,7 @@ public class ProjectSettingsManager : MonoBehaviour
         string hexColor = ColorUtility.ToHtmlStringRGB(newColor);
         currentProjectSettings.brushColor = "#" + hexColor;
 
-        // Updated for new DrawingManager brush system
+
         DrawingManager.brushColor = newColor; 
     }
 
@@ -78,7 +73,7 @@ public class ProjectSettingsManager : MonoBehaviour
         else
         {
             Debug.LogWarning("Failed to parse brush color: " + currentProjectSettings.brushColor);
-            BrushColorInputField.CurrentColor = Color.black; // fallback
+            BrushColorInputField.CurrentColor = Color.black; 
         }
     }
 }

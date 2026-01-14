@@ -27,8 +27,7 @@ public class CharacterData
 public class ProjectSettings
 {
     public string projectName;
-
-    // CURRENT BRUSH STATE (saved with project)
+    
     public string brushColor;
     public int brushSize;
 
@@ -43,8 +42,7 @@ public class ProjectSettings
     public float calligraphyAspect;
 
     public string currentCharacter;
-
-    // ONE ENTRY PER CHARACTER
+    
     public List<CharacterData> characters = new();
 
     public ProjectSettings()
