@@ -90,7 +90,6 @@ public class DrawingManager : MonoBehaviour
 
         if (Input.GetMouseButton(0) && currentStroke != null)
         {
-            // Add points along the drag
             if (Vector2.Distance(curPos, lastPos) >= brushSize * spacing)
             {
                 currentStroke.AddPoint(curPos);
@@ -105,7 +104,6 @@ public class DrawingManager : MonoBehaviour
             currentStroke = null;
         }
     }
-
 
     void DrawStrokePixels(Stroke s)
     {
@@ -131,7 +129,6 @@ public class DrawingManager : MonoBehaviour
             DrawBrushStamp(p, s);
         }
     }
-
 
     void DrawBrushStamp(Vector2 pos, Stroke s)
     {
@@ -233,8 +230,8 @@ public class DrawingManager : MonoBehaviour
     public void SetCurrentCharacter(CharacterData cd)
     {
         currentCharacter = cd;
-        UndoRedoManager.Instance.OnCharacterSwitched(cd); // make sure stacks exist
-        LoadCharacterHistory(cd); // rebuild undo stack for this character
+        UndoRedoManager.Instance.OnCharacterSwitched(cd);
+        LoadCharacterHistory(cd);
         RedrawFromStrokes();
     }
 
@@ -242,12 +239,9 @@ public class DrawingManager : MonoBehaviour
     {
         UndoRedoManager.Instance.ClearHistory(character.character);
 
-        // Rebuild undo stack from all strokes in the character
         foreach (var stroke in character.strokes)
             UndoRedoManager.Instance.RegisterStroke(stroke);
     }
-
-
 
     public void RedrawFromStrokes()
     {
@@ -263,14 +257,85 @@ public class DrawingManager : MonoBehaviour
     public CharacterData GetCurrentCharacter() => currentCharacter;
 
     // ========================
-    // Brush setters
+    // Brush setters (now notify cursor)
     // ========================
-    public void SetBrushSize(int size) => brushSize = size;
-    public void SetOpacity(float val) => opacity = val;
-    public void SetHardness(float val) => hardness = val;
-    public void SetSpacing(float val) => spacing = val;
-    public void SetCalligraphyAngle(float val) => calligraphyAngle = val;
-    public void SetCalligraphyAspect(float val) => calligraphyAspect = val;
-    public void SetBrushShape(BrushShape shape) => brushShape = shape;
-    public void SetTool(ToolType tool) => currentTool = tool;
+    private static BrushCursor Cursor =>
+        Object.FindObjectOfType<BrushCursor>();
+
+    private static void NotifyCursor()
+    {
+        if (Cursor != null)
+            Cursor.OnBrushSettingsChanged();
+    }
+
+    public void SetBrushSize(int size)
+    {
+        brushSize = Mathf.Clamp(size, 1, 30);
+        
+        var ps = ProjectSettingsManager.Instance.currentProjectSettings;
+        if (ps != null)
+        {
+            ps.brushSize = brushSize;
+        }
+        
+        NotifyCursor();
+    }
+
+    public void SetOpacity(float val)
+    {
+        opacity = val;
+        NotifyCursor();
+    }
+
+    public void SetHardness(float val)
+    {
+        hardness = val;
+        NotifyCursor();
+    }
+
+    public void SetSpacing(float val)
+    {
+        spacing = val;
+        NotifyCursor();
+    }
+
+    public void SetCalligraphyAngle(float val)
+    {
+        calligraphyAngle = val;
+        NotifyCursor();
+    }
+
+    public void SetCalligraphyAspect(float val)
+    {
+        calligraphyAspect = val;
+        NotifyCursor();
+    }
+
+    public void SetBrushShape(BrushShape shape)
+    {
+        brushShape = shape;
+        NotifyCursor();
+    }
+
+    public void SetTool(ToolType tool)
+    {
+        currentTool = tool;
+        NotifyCursor();
+    }
+
+    // ========================
+    // Cycle shape tool
+    // ========================
+    public void CycleShapeTool()
+    {
+        brushShape = brushShape switch
+        {
+            BrushShape.Circle => BrushShape.Square,
+            BrushShape.Square => BrushShape.Diamond,
+            BrushShape.Diamond => BrushShape.Calligraphy,
+            _ => BrushShape.Circle
+        };
+
+        NotifyCursor();
+    }
 }

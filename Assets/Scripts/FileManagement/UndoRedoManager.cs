@@ -99,17 +99,6 @@ public class UndoRedoManager : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        // Undo: Ctrl + Z
-        if (Input.GetKeyDown(KeyCode.Z))
-            Undo();
-
-        // Redo: Ctrl + Y
-        if (Input.GetKeyDown(KeyCode.Y))
-            Redo();
-    }
-
     // Call when switching characters to make sure undo/redo references the right stacks
     public void OnCharacterSwitched(CharacterData character)
     {
