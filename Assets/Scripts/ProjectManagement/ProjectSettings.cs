@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -9,6 +10,9 @@ public class CharacterData
     public string character;
     public List<Stroke> strokes = new List<Stroke>();
 
+    [XmlIgnore]
+    [System.NonSerialized] public Texture2D cachedTexture;
+    
     public CharacterData() { }
     public int codepoint;
 

@@ -63,6 +63,7 @@ public class UndoRedoManager : MonoBehaviour
         if (character.strokes.Contains(last))
             character.strokes.Remove(last);
 
+        // Update cached texture
         drawingManager.RedrawFromStrokes();
     }
 
@@ -82,8 +83,10 @@ public class UndoRedoManager : MonoBehaviour
 
         character.strokes.Add(s);
 
+        // Update cached texture
         drawingManager.RedrawFromStrokes();
     }
+
 
     public void ClearHistory(string character = null)
     {

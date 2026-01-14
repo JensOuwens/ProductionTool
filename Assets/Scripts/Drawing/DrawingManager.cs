@@ -5,8 +5,8 @@ using System.Collections.Generic;
 public class DrawingManager : MonoBehaviour
 {
     [SerializeField] private RawImage drawImage;
-    [SerializeField] private int totalPixelsX = 1024;
-    [SerializeField] private int totalPixelsY = 512;
+    [SerializeField] public int totalPixelsX = 1024;
+    [SerializeField] public int totalPixelsY = 512;
 
     public static int brushSize = 6;
     public static Color brushColor = Color.black;
@@ -36,11 +36,15 @@ public class DrawingManager : MonoBehaviour
     void Start()
     {
         rectTransform = drawImage.rectTransform;
-        generatedTexture = new Texture2D(totalPixelsX, totalPixelsY, TextureFormat.RGBA32, false);
-        generatedTexture.filterMode = FilterMode.Point;
 
-        ClearCanvasVisual();
-        drawImage.texture = generatedTexture;
+        // If no character is loaded yet, create a blank temp texture
+        if (currentCharacter == null)
+        {
+            generatedTexture = new Texture2D(totalPixelsX, totalPixelsY, TextureFormat.RGBA32, false);
+            generatedTexture.filterMode = FilterMode.Point;
+            ClearCanvasVisual();
+            drawImage.texture = generatedTexture;
+        }
 
         brushCursor = FindObjectOfType<BrushCursor>();
         isReady = true;
@@ -52,82 +56,108 @@ public class DrawingManager : MonoBehaviour
             DrawFromMouse();
     }
 
-    void DrawFromMouse()
+void DrawFromMouse()
+{
+    if (currentCharacter == null || currentCharacter.cachedTexture == null) return;
+
+    Texture2D tex = currentCharacter.cachedTexture; // <-- all drawing happens here
+
+    Vector2 localPos;
+    if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            rectTransform, Input.mousePosition, null, out localPos))
+        return;
+
+    Vector2 size = rectTransform.rect.size;
+    float x = (localPos.x + size.x * 0.5f) / size.x * totalPixelsX;
+    float y = (localPos.y + size.y * 0.5f) / size.y * totalPixelsY;
+    Vector2 curPos = new Vector2(x, y);
+
+    if (x < 0 || y < 0 || x >= totalPixelsX || y >= totalPixelsY)
+        return;
+
+    // ========================
+    // Fill tool
+    // ========================
+    if (currentTool == ToolType.Fill && Input.GetMouseButtonDown(0))
     {
-        if (currentCharacter == null) return;
+        Color target = tex.GetPixel((int)x, (int)y);
+        Color replacement = brushColor;
+        replacement.a = opacity;
 
-        Vector2 localPos;
-        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                rectTransform, Input.mousePosition, null, out localPos))
-            return;
-
-        Vector2 size = rectTransform.rect.size;
-        float x = (localPos.x + size.x * 0.5f) / size.x * totalPixelsX;
-        float y = (localPos.y + size.y * 0.5f) / size.y * totalPixelsY;
-        Vector2 curPos = new Vector2(x, y);
-
-        if (x < 0 || y < 0 || x >= totalPixelsX || y >= totalPixelsY)
-            return;
-
-        // ========================
-        // Fill tool
-        // ========================
-        if (currentTool == ToolType.Fill && Input.GetMouseButtonDown(0))
-        {
-            Color target = generatedTexture.GetPixel((int)x, (int)y);
-            Color replacement = brushColor;
-            replacement.a = opacity;
-
-            FloodFill((int)x, (int)y, target, replacement);
-            generatedTexture.Apply();
-            return;
-        }
-
-        bool isEraser = currentTool == ToolType.Eraser;
-        Color col = isEraser ? Color.clear : brushColor;
-        col.a = opacity;
-
-        // ========================
-        // Start stroke
-        // ========================
-        if (Input.GetMouseButtonDown(0))
-        {
-            currentStroke = new Stroke(
-                curPos, brushSize, col, opacity, hardness, spacing,
-                brushShape, isEraser, calligraphyAngle, calligraphyAspect
-            );
-
-            currentCharacter.strokes.Add(currentStroke);
-            UndoRedoManager.Instance.RegisterStroke(currentStroke);
-
-            lastPos = curPos;
-            lineStart = curPos;
-            return;
-        }
-
-        // ========================
-        // Continue stroke (8-direction snap with MMB)
-        // ========================
-        if (currentStroke != null)
-        {
-            Vector2 drawTarget = curPos;
-
-            if (Input.GetMouseButton(2))
-                drawTarget = SnapTo8Directions(lineStart, curPos);
-
-            if (Vector2.Distance(drawTarget, lastPos) >= brushSize * spacing)
-            {
-                currentStroke.AddPoint(drawTarget);
-                DrawLinePixels(lastPos, drawTarget, currentStroke);
-                lastPos = drawTarget;
-                generatedTexture.Apply();
-            }
-        }
-
-        if (Input.GetMouseButtonUp(0))
-            currentStroke = null;
+        FloodFillIntoTexture(tex, (int)x, (int)y, target, replacement);
+        tex.Apply();
+        return;
     }
 
+    bool isEraser = currentTool == ToolType.Eraser;
+    Color col = isEraser ? Color.clear : brushColor;
+    col.a = opacity;
+
+    // ========================
+    // Start stroke
+    // ========================
+    if (Input.GetMouseButtonDown(0))
+    {
+        currentStroke = new Stroke(
+            curPos, brushSize, col, opacity, hardness, spacing,
+            brushShape, isEraser, calligraphyAngle, calligraphyAspect
+        );
+
+        currentCharacter.strokes.Add(currentStroke);
+        UndoRedoManager.Instance.RegisterStroke(currentStroke);
+
+        lastPos = curPos;
+        lineStart = curPos;
+        return;
+    }
+
+    // ========================
+    // Continue stroke
+    // ========================
+    if (currentStroke != null)
+    {
+        Vector2 drawTarget = curPos;
+
+        if (Input.GetMouseButton(2))
+            drawTarget = SnapTo8Directions(lineStart, curPos);
+
+        if (Vector2.Distance(drawTarget, lastPos) >= brushSize * spacing)
+        {
+            currentStroke.AddPoint(drawTarget);
+            DrawLinePixelsIntoTexture(tex, lastPos, drawTarget, currentStroke);
+            lastPos = drawTarget;
+            tex.Apply();
+        }
+    }
+
+    if (Input.GetMouseButtonUp(0))
+        currentStroke = null;
+}
+
+void FloodFillIntoTexture(Texture2D tex, int x, int y, Color target, Color replacement)
+{
+    if (target == replacement) return;
+
+    Stack<Vector2Int> stack = new Stack<Vector2Int>();
+    stack.Push(new Vector2Int(x, y));
+
+    while (stack.Count > 0)
+    {
+        var p = stack.Pop();
+        if (p.x < 0 || p.y < 0 || p.x >= totalPixelsX || p.y >= totalPixelsY)
+            continue;
+
+        if (tex.GetPixel(p.x, p.y) != target)
+            continue;
+
+        tex.SetPixel(p.x, p.y, replacement);
+
+        stack.Push(p + Vector2Int.up);
+        stack.Push(p + Vector2Int.down);
+        stack.Push(p + Vector2Int.left);
+        stack.Push(p + Vector2Int.right);
+    }
+}
     // ========================
     // Direction snapping
     // ========================
@@ -266,9 +296,26 @@ public class DrawingManager : MonoBehaviour
     {
         currentCharacter = cd;
         UndoRedoManager.Instance.OnCharacterSwitched(cd);
+
+        // Load cached texture if available
+        if (cd.cachedTexture != null)
+        {
+            drawImage.texture = cd.cachedTexture;
+        }
+        else
+        {
+            // fallback: render strokes into a new texture and cache it
+            cd.cachedTexture = new Texture2D(totalPixelsX, totalPixelsY, TextureFormat.RGBA32, false);
+            RenderCharacterToTexture(cd);
+            drawImage.texture = cd.cachedTexture;
+        }
+        
+        drawImage.texture = cd.cachedTexture;
+
+        // Rebuild the undo/redo history for this character
         LoadCharacterHistory(cd);
-        RedrawFromStrokes();
     }
+
 
     public void LoadCharacterHistory(CharacterData character)
     {
@@ -278,25 +325,92 @@ public class DrawingManager : MonoBehaviour
             UndoRedoManager.Instance.RegisterStroke(stroke);
     }
 
-public void RedrawFromStrokes()
-{
-    ClearCanvasVisual();
+    public void RedrawFromStrokes()
+    {
+        if (currentCharacter == null) return;
 
-    if (currentCharacter == null || currentCharacter.strokes.Count == 0) return;
+        // Clear cached texture
+        Color[] fill = new Color[totalPixelsX * totalPixelsY];
+        for (int i = 0; i < fill.Length; i++)
+            fill[i] = Color.white;
 
-    // Create a temporary Color[] buffer
-    Color[] pixels = new Color[totalPixelsX * totalPixelsY];
-    for (int i = 0; i < pixels.Length; i++)
-        pixels[i] = Color.white; // clear background
+        currentCharacter.cachedTexture.SetPixels(fill);
 
-    // Draw each stroke into the pixel buffer
-    foreach (var s in currentCharacter.strokes)
-        DrawStrokeIntoBuffer(s, pixels);
+        // Draw all strokes into cached texture
+        foreach (var s in currentCharacter.strokes)
+            DrawStrokeIntoTexture(currentCharacter.cachedTexture, s);
 
-    // Apply the final buffer to the texture once
-    generatedTexture.SetPixels(pixels);
-    generatedTexture.Apply();
-}
+        currentCharacter.cachedTexture.Apply();
+
+        // Assign to display
+        drawImage.texture = currentCharacter.cachedTexture;
+    }
+    
+    private void DrawStrokeIntoTexture(Texture2D tex, Stroke s)
+    {
+        if (s.points.Count < 2) return;
+
+        for (int i = 1; i < s.points.Count; i++)
+            DrawLinePixelsIntoTexture(tex, s.points[i - 1], s.points[i], s);
+    }
+
+    private void DrawLinePixelsIntoTexture(Texture2D tex, Vector2 start, Vector2 end, Stroke s)
+    {
+        float dist = Vector2.Distance(start, end);
+        float step = Mathf.Max(1f, s.brushSize * s.spacing);
+        int count = Mathf.CeilToInt(dist / step);
+
+        for (int i = 0; i <= count; i++)
+        {
+            Vector2 p = Vector2.Lerp(start, end, i / (float)count);
+            DrawBrushStampIntoTexture(tex, p, s);
+        }
+    }
+
+    private void DrawBrushStampIntoTexture(Texture2D tex, Vector2 pos, Stroke s)
+    {
+        int cx = (int)pos.x;
+        int cy = (int)pos.y;
+        int r = s.brushSize;
+
+        for (int x = -r; x <= r; x++)
+        for (int y = -r; y <= r; y++)
+        {
+            int px = cx + x;
+            int py = cy + y;
+            if (px < 0 || py < 0 || px >= totalPixelsX || py >= totalPixelsY)
+                continue;
+
+            float d = s.shape switch
+            {
+                BrushShape.Circle => Mathf.Sqrt(x * x + y * y) / r,
+                BrushShape.Square => Mathf.Max(Mathf.Abs(x), Mathf.Abs(y)) / r,
+                BrushShape.Diamond => (Mathf.Abs(x) + Mathf.Abs(y)) / r,
+                BrushShape.Calligraphy => CalligraphyDistance(x, y, r, s),
+                _ => 1f
+            };
+
+            if (d > 1f) continue;
+
+            float falloff = Mathf.Pow(1f - d, s.hardness * 4f);
+            float a = falloff * s.opacity;
+
+            if (s.isEraser)
+            {
+                Color dst = tex.GetPixel(px, py);
+                if (dst.a > 0f)
+                    tex.SetPixel(px, py, Color.clear);
+            }
+            else
+            {
+                Color dst = tex.GetPixel(px, py);
+                Color outCol = Color.Lerp(dst, s.color, a);
+                tex.SetPixel(px, py, outCol);
+            }
+        }
+    }
+
+
 
 private void DrawStrokeIntoBuffer(Stroke s, Color[] buffer)
 {
@@ -439,4 +553,18 @@ private void DrawBrushStampIntoBuffer(Vector2 pos, Stroke s, Color[] buffer)
 
         NotifyCursor();
     }
+    
+    public void RenderCharacterToTexture(CharacterData ch)
+    {
+        Color[] pixels = new Color[totalPixelsX * totalPixelsY];
+        for (int i = 0; i < pixels.Length; i++)
+            pixels[i] = Color.white;
+
+        foreach (var s in ch.strokes)
+            DrawStrokeIntoBuffer(s, pixels);
+
+        ch.cachedTexture.SetPixels(pixels);
+        ch.cachedTexture.Apply();
+    }
+    
 }

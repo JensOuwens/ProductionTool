@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Xml.Serialization;
 using UnityEngine;
@@ -10,6 +11,13 @@ public class OpenFile : MonoBehaviour
 
     public string CurrentFilePath;
     private XmlSerializer xmlSerializer = new(typeof(ProjectSettings));
+    
+    private DrawingManager drawingManager;
+
+    private void Awake()
+    {
+        drawingManager = FindObjectOfType<DrawingManager>();
+    }
 
     public void OnClickOpenFile()
     {
@@ -27,6 +35,17 @@ public class OpenFile : MonoBehaviour
 
         CharacterDefaults.EnsureCharacters(loaded);
         ProjectSettingsManager.Instance.currentProjectSettings = loaded;
+        
+        foreach (var ch in loaded.characters)
+        {
+            ch.cachedTexture = new Texture2D(drawingManager.totalPixelsX,
+                drawingManager.totalPixelsY,
+                TextureFormat.RGBA32, false);
+
+            // Render the character into the texture
+            drawingManager.RenderCharacterToTexture(ch);
+        }
+
 
         ApplyBrushSettings(loaded);
 
