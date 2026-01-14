@@ -42,10 +42,10 @@ public class BrushUI : MonoBehaviour
         eraserSelector.onClick.AddListener(() => { drawingManager.SetTool(ToolType.Eraser); UpdateVisibleSettings(); });
         fillSelector.onClick.AddListener(() => { drawingManager.SetTool(ToolType.Fill); UpdateVisibleSettings(); });
 
-        circleSelector.onClick.AddListener(() => { drawingManager.SetBrushShape(BrushShape.Circle); UpdateVisibleSettings(); });
-        squareSelector.onClick.AddListener(() => { drawingManager.SetBrushShape(BrushShape.Square); UpdateVisibleSettings(); });
-        diamondSelector.onClick.AddListener(() => { drawingManager.SetBrushShape(BrushShape.Diamond); UpdateVisibleSettings(); });
-        calligraphySelector.onClick.AddListener(() => { drawingManager.SetBrushShape(BrushShape.Calligraphy); UpdateVisibleSettings(); });
+        circleSelector.onClick.AddListener(() => { drawingManager.SetBrushShape(BrushShape.Circle); UpdateVisibleSettings(); SetCalligraphyUIActive(false); });
+        squareSelector.onClick.AddListener(() => { drawingManager.SetBrushShape(BrushShape.Square); UpdateVisibleSettings(); SetCalligraphyUIActive(false); });
+        diamondSelector.onClick.AddListener(() => { drawingManager.SetBrushShape(BrushShape.Diamond); UpdateVisibleSettings(); SetCalligraphyUIActive(false); });
+        calligraphySelector.onClick.AddListener(() => { drawingManager.SetBrushShape(BrushShape.Calligraphy); UpdateVisibleSettings(); SetCalligraphyUIActive(true); });
 
         RegisterBrushSizeInput();
         RegisterPercentInput(opacityInput, drawingManager.SetOpacity);
@@ -172,5 +172,14 @@ public class BrushUI : MonoBehaviour
 
         if (visible)
             input.text = Mathf.RoundToInt(value).ToString();
+    }
+    
+    public void SetCalligraphyUIActive(bool isActive)
+    {
+        calligraphyAngleInput.gameObject.SetActive(isActive);
+        calligraphyAngleText.SetActive(isActive);
+
+        calligraphyAspectInput.gameObject.SetActive(isActive);
+        calligraphyAspectText.SetActive(isActive);
     }
 }

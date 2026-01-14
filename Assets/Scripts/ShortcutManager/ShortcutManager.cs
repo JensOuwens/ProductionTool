@@ -44,8 +44,7 @@ public class ShortcutManager : MonoBehaviour
             undoRedoManager.Undo();
 
         if (Input.GetKey(KeyCode.LeftControl) &&
-            Input.GetKey(KeyCode.LeftShift) &&
-            Input.GetKeyDown(KeyCode.Z))
+            Input.GetKeyDown(KeyCode.Y))
             undoRedoManager.Redo();
     }
 

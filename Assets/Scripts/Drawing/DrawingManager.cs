@@ -255,10 +255,7 @@ public class DrawingManager : MonoBehaviour
     }
 
     public CharacterData GetCurrentCharacter() => currentCharacter;
-
-    // ========================
-    // Brush setters (now notify cursor)
-    // ========================
+    
     private static BrushCursor Cursor =>
         Object.FindObjectOfType<BrushCursor>();
 
