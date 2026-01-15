@@ -191,6 +191,11 @@ void FloodFill(int x, int y, Color target, Color replacement, Texture2D tex)
 
     void DrawBrushStamp(Vector2 pos, Stroke s)
     {
+        if (currentCharacter == null || currentCharacter.cachedTexture == null)
+            return;
+
+        Texture2D tex = currentCharacter.cachedTexture;
+
         int cx = (int)pos.x;
         int cy = (int)pos.y;
         int r = s.brushSize;
@@ -219,18 +224,19 @@ void FloodFill(int x, int y, Color target, Color replacement, Texture2D tex)
 
             if (s.isEraser)
             {
-                Color dst = generatedTexture.GetPixel(px, py);
+                Color dst = tex.GetPixel(px, py);
                 if (dst.a > 0f)
-                    generatedTexture.SetPixel(px, py, Color.clear);
+                    tex.SetPixel(px, py, Color.clear);
             }
             else
             {
-                Color dst = generatedTexture.GetPixel(px, py);
+                Color dst = tex.GetPixel(px, py);
                 Color outCol = Color.Lerp(dst, s.color, a);
-                generatedTexture.SetPixel(px, py, outCol);
+                tex.SetPixel(px, py, outCol);
             }
         }
     }
+
 
     float CalligraphyDistance(int x, int y, int r, Stroke s)
     {
