@@ -168,14 +168,6 @@ void FloodFill(int x, int y, Color target, Color replacement, Texture2D tex)
         return origin + new Vector2(Mathf.Cos(snappedAngle), Mathf.Sin(snappedAngle)) * length;
     }
 
-    void DrawStrokePixels(Stroke s)
-    {
-        if (s.points.Count < 2) return;
-
-        for (int i = 1; i < s.points.Count; i++)
-            DrawLinePixels(s.points[i - 1], s.points[i], s);
-    }
-
     void DrawLinePixels(Vector2 start, Vector2 end, Stroke s)
     {
         float dist = Vector2.Distance(start, end);
@@ -248,31 +240,6 @@ void FloodFill(int x, int y, Color target, Color replacement, Texture2D tex)
         float ry = (x * sin + y * cos) / (r * s.aspectRatio);
 
         return Mathf.Sqrt(rx * rx + ry * ry);
-    }
-
-    void FloodFill(int x, int y, Color target, Color replacement)
-    {
-        if (target == replacement) return;
-
-        Stack<Vector2Int> stack = new Stack<Vector2Int>();
-        stack.Push(new Vector2Int(x, y));
-
-        while (stack.Count > 0)
-        {
-            var p = stack.Pop();
-            if (p.x < 0 || p.y < 0 || p.x >= totalPixelsX || p.y >= totalPixelsY)
-                continue;
-
-            if (generatedTexture.GetPixel(p.x, p.y) != target)
-                continue;
-
-            generatedTexture.SetPixel(p.x, p.y, replacement);
-
-            stack.Push(p + Vector2Int.up);
-            stack.Push(p + Vector2Int.down);
-            stack.Push(p + Vector2Int.left);
-            stack.Push(p + Vector2Int.right);
-        }
     }
 
     void ClearCanvasVisual()
