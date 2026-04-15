@@ -72,6 +72,7 @@ void DrawFromMouse()
     if (x < 0 || y < 0 || x >= totalPixelsX || y >= totalPixelsY)
         return;
 
+    //CHANGE HERE
     if (currentTool == ToolType.Fill && Input.GetMouseButtonDown(0))
     {
         Color target = currentCharacter.cachedTexture.GetPixel((int)x, (int)y);
@@ -129,6 +130,7 @@ void DrawFromMouse()
         currentStroke = null;
 }
 
+//CHANGE TOO
 void FloodFill(int x, int y, Color target, Color replacement, Texture2D tex)
 {
     if (target == replacement) return;
@@ -230,6 +232,7 @@ void FloodFill(int x, int y, Color target, Color replacement, Texture2D tex)
     }
 
 
+    //DO SOMETHING WITH IT
     float CalligraphyDistance(int x, int y, int r, Stroke s)
     {
         float rad = s.angle * Mathf.Deg2Rad;
@@ -242,6 +245,7 @@ void FloodFill(int x, int y, Color target, Color replacement, Texture2D tex)
         return Mathf.Sqrt(rx * rx + ry * ry);
     }
 
+    //CHANGE TO DIFFERENT SCRIPT
     void ClearCanvasVisual()
     {
         Color[] fill = new Color[totalPixelsX * totalPixelsY];
@@ -252,6 +256,7 @@ void FloodFill(int x, int y, Color target, Color replacement, Texture2D tex)
         generatedTexture.Apply();
     }
 
+    //CHANGE TO DIFFERENT SCRIPT
     public void ClearCanvas()
     {
         currentCharacter?.strokes.Clear();
@@ -259,6 +264,7 @@ void FloodFill(int x, int y, Color target, Color replacement, Texture2D tex)
         UndoRedoManager.Instance.ClearHistory();
     }
 
+    //CHANGE TO DIFFERENT SCRIPT
     public void SetCurrentCharacter(CharacterData cd)
     {
         currentCharacter = cd;
@@ -283,7 +289,7 @@ void FloodFill(int x, int y, Color target, Color replacement, Texture2D tex)
         LoadCharacterHistory(cd);
     }
 
-
+    //CHANGE TO DIFFERENT SCRIPT
     public void LoadCharacterHistory(CharacterData character)
     {
         UndoRedoManager.Instance.ClearHistory(character.character);
@@ -292,6 +298,7 @@ void FloodFill(int x, int y, Color target, Color replacement, Texture2D tex)
             UndoRedoManager.Instance.RegisterStroke(stroke);
     }
 
+    //CHANGE TO DIFFERENT SCRIPT
     public void RedrawFromStrokes()
     {
         if (currentCharacter == null) return;
@@ -334,6 +341,7 @@ void FloodFill(int x, int y, Color target, Color replacement, Texture2D tex)
         }
     }
 
+    //WORK ON THIS
     private void DrawBrushStampIntoTexture(Texture2D tex, Vector2 pos, Stroke s)
     {
         int cx = (int)pos.x;
@@ -378,7 +386,7 @@ void FloodFill(int x, int y, Color target, Color replacement, Texture2D tex)
     }
 
 
-
+//CHANGE TO DIFFERENT SCRIPT
 private void DrawStrokeIntoBuffer(Stroke s, Color[] buffer)
 {
     if (s.points.Count < 2) return;
@@ -399,6 +407,7 @@ private void DrawStrokeIntoBuffer(Stroke s, Color[] buffer)
     }
 }
 
+//WORK ON THIS
 private void DrawBrushStampIntoBuffer(Vector2 pos, Stroke s, Color[] buffer)
 {
     int cx = (int)pos.x;
@@ -443,18 +452,21 @@ private void DrawBrushStampIntoBuffer(Vector2 pos, Stroke s, Color[] buffer)
     }
 }
 
-
+    //DONT KNOW YET
     public CharacterData GetCurrentCharacter() => currentCharacter;
 
+    //PROBABLY DO SO,ETHING DIFFERENT
     private static BrushCursor Cursor =>
         Object.FindObjectOfType<BrushCursor>();
 
+    //DONT KNOW YET
     private static void NotifyCursor()
     {
         if (Cursor != null)
             Cursor.OnBrushSettingsChanged();
     }
 
+    //SETTINGS IN DIFFERENT SCRIPT
     public void SetBrushSize(int size)
     {
         brushSize = Mathf.Clamp(size, 1, 30);
@@ -521,6 +533,7 @@ private void DrawBrushStampIntoBuffer(Vector2 pos, Stroke s, Color[] buffer)
         NotifyCursor();
     }
     
+    //CHANGE TO DIFFERENT SCRIPT
     public void RenderCharacterToTexture(CharacterData ch)
     {
         Color[] pixels = new Color[totalPixelsX * totalPixelsY];
