@@ -12,12 +12,9 @@ public class OpenFile : MonoBehaviour
     public string CurrentFilePath;
     private XmlSerializer xmlSerializer = new(typeof(ProjectSettings));
     
-    private DrawingManager drawingManager;
-
-    private void Awake()
-    {
-        drawingManager = FindObjectOfType<DrawingManager>();
-    }
+    [SerializeField] private DrawingManager drawingManager;
+    [SerializeField] private CharachterCollectionManager charachterCollectionManager;
+    [SerializeField] private EnableCanvasOnLoad enableCanvasOnLoad;
 
     public void OnClickOpenFile()
     {
@@ -55,14 +52,11 @@ public class OpenFile : MonoBehaviour
         if (activeChar == null && loaded.characters.Count > 0)
             activeChar = loaded.characters[0];
 
-        FindObjectOfType<DrawingManager>()
-            .SetCurrentCharacter(activeChar);
+        drawingManager.SetCurrentCharacter(activeChar);
 
-        FindObjectOfType<CharachterCollectionManager>()
-            .LoadCharachtersIntoCollection();
+        charachterCollectionManager.LoadCharachtersIntoCollection();
         
-        FindObjectOfType<EnableCanvasOnLoad>()
-            .EnableCanvases();
+        enableCanvasOnLoad.EnableCanvases();
 
 
         ProjectSettingsManager.Instance.DisplayProjectSettings();
