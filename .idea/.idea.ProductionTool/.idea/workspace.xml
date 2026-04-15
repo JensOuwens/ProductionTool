@@ -6,6 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="a2a7ce52-a557-4dc2-8641-2df5157c3922" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ProductionTool/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ProductionTool/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Drawing/Brushes/IBrush.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Drawing/Brushes/IBrush.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Drawing/Brushes/IBrushShape.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Drawing/Brushes/IBrushShape.cs.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Drawing/DrawingManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Drawing/DrawingManager.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -139,7 +142,7 @@
       <workItem from="1768392348592" duration="5743000" />
       <workItem from="1768418886668" duration="5207000" />
       <workItem from="1768470813044" duration="257000" />
-      <workItem from="1776236131244" duration="3448000" />
+      <workItem from="1776236131244" duration="6696000" />
     </task>
     <servers />
   </component>

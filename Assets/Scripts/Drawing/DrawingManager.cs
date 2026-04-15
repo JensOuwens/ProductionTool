@@ -1,6 +1,8 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using Object = UnityEngine.Object;
 
 public class DrawingManager : MonoBehaviour
 {
@@ -32,6 +34,20 @@ public class DrawingManager : MonoBehaviour
 
     private BrushCursor brushCursor;
     private Stroke currentStroke;
+    
+    private PencilBrush pencilBrush;
+    private FloodFillBrush floodFillBrush;
+    private EreaserBrush ereaserBrush;
+    private IBrush currentBrush;
+
+    private void Awake()
+    {
+        pencilBrush = new PencilBrush();
+        floodFillBrush = new FloodFillBrush();
+        ereaserBrush = new EreaserBrush();
+    
+        UpdateCurrentBrush();
+    }
 
     void Start()
     {
@@ -58,6 +74,11 @@ public class DrawingManager : MonoBehaviour
 void DrawFromMouse()
 {
     if (currentCharacter == null) return;
+    
+    if (Input.GetMouseButtonDown(0) && currentTool == ToolType.Fill)
+    {
+        currentStroke = null;
+    }
 
     Vector2 localPos;
     if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -73,21 +94,40 @@ void DrawFromMouse()
         return;
 
     //CHANGE HERE
-    if (currentTool == ToolType.Fill && Input.GetMouseButtonDown(0))
+    if (currentTool == ToolType.Fill)
     {
-        Color target = currentCharacter.cachedTexture.GetPixel((int)x, (int)y);
-        Color replacement = brushColor;
-        replacement.a = opacity;
+        if (Input.GetMouseButtonDown(0))
+        {
+            Color fillCol = brushColor;
+            fillCol.a = opacity;
 
-        FloodFill((int)x, (int)y, target, replacement, currentCharacter.cachedTexture);
-        currentCharacter.cachedTexture.Apply();
-        
-        Stroke fillStroke = new Stroke(new Vector2((int)x, (int)y), 0, replacement, opacity, 1f, 1f, BrushShape.Circle, false, 0, 1f);
-        fillStroke.isFill = true; 
-        currentCharacter.strokes.Add(fillStroke);
-        UndoRedoManager.Instance.RegisterStroke(fillStroke);
+            Stroke fillStroke = new Stroke(
+                new Vector2((int)x, (int)y),
+                0,
+                fillCol,
+                opacity,
+                1f,
+                1f,
+                BrushShape.Circle,
+                false,
+                0,
+                1f
+            );
 
-        return;
+            fillStroke.isFill = true;
+
+            currentCharacter.strokes.Add(fillStroke);
+            UndoRedoManager.Instance.RegisterStroke(fillStroke);
+
+            currentBrush.OnMouseDown(
+                currentCharacter.cachedTexture,
+                new Vector2Int((int)x, (int)y),
+                fillStroke,
+                this
+            );
+        }
+
+        return; // IMPORTANT: kills pencil logic completely
     }
 
 
@@ -104,6 +144,13 @@ void DrawFromMouse()
 
         currentCharacter.strokes.Add(currentStroke);
         UndoRedoManager.Instance.RegisterStroke(currentStroke);
+        
+        currentBrush.OnMouseDown(
+            currentCharacter.cachedTexture,
+            new Vector2Int((int)curPos.x, (int)curPos.y),
+            currentStroke,
+            this
+        );
 
         lastPos = curPos;
         lineStart = curPos;
@@ -112,6 +159,13 @@ void DrawFromMouse()
     
     if (currentStroke != null)
     {
+        currentBrush.OnMouseDrag(
+            currentCharacter.cachedTexture,
+            new Vector2Int((int)curPos.x, (int)curPos.y),
+            currentStroke,
+            this
+        );
+
         Vector2 drawTarget = curPos;
 
         if (Input.GetMouseButton(2))
@@ -127,7 +181,19 @@ void DrawFromMouse()
     }
 
     if (Input.GetMouseButtonUp(0))
+    {
+        if (currentStroke != null)
+        {
+            currentBrush.OnMouseUp(
+                currentCharacter.cachedTexture,
+                new Vector2Int((int)curPos.x, (int)curPos.y),
+                currentStroke,
+                this
+            );
+        }
+
         currentStroke = null;
+    }
 }
 
 //CHANGE TOO
@@ -170,7 +236,7 @@ void FloodFill(int x, int y, Color target, Color replacement, Texture2D tex)
         return origin + new Vector2(Mathf.Cos(snappedAngle), Mathf.Sin(snappedAngle)) * length;
     }
 
-    void DrawLinePixels(Vector2 start, Vector2 end, Stroke s)
+    public void DrawLinePixels(Vector2 start, Vector2 end, Stroke s)
     {
         float dist = Vector2.Distance(start, end);
         float step = Mathf.Max(1f, s.brushSize * s.spacing);
@@ -517,6 +583,8 @@ private void DrawBrushStampIntoBuffer(Vector2 pos, Stroke s, Color[] buffer)
     public void SetTool(ToolType tool)
     {
         currentTool = tool;
+        UpdateCurrentBrush();
+        currentStroke = null;
         NotifyCursor();
     }
 
@@ -547,4 +615,14 @@ private void DrawBrushStampIntoBuffer(Vector2 pos, Stroke s, Color[] buffer)
         ch.cachedTexture.Apply();
     }
     
+    private void UpdateCurrentBrush()
+    {
+        currentBrush = currentTool switch
+        {
+            ToolType.Brush => pencilBrush,
+            ToolType.Eraser => ereaserBrush,
+            ToolType.Fill => floodFillBrush,
+            _ => pencilBrush
+        };
+    }
 }
