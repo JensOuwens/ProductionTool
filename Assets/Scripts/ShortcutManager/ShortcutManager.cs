@@ -4,6 +4,7 @@ public class ShortcutManager : MonoBehaviour
 {
     [Header("Tool References")]
     [SerializeField] private DrawingManager drawingManager;
+    [SerializeField] private SettingsChanger settingsChanger;
     [SerializeField] private UndoRedoManager undoRedoManager;
     [SerializeField] private SaveFile saveFile;
     [SerializeField] private OpenFile openFile;
@@ -26,16 +27,16 @@ public class ShortcutManager : MonoBehaviour
     void HandleToolShortcuts()
     {
         if (Input.GetKeyDown(KeyCode.B))
-            drawingManager.SetTool(ToolType.Brush);
+            settingsChanger.SetTool(ToolType.Brush);
 
         if (Input.GetKeyDown(KeyCode.E))
-            drawingManager.SetTool(ToolType.Eraser);
+            settingsChanger.SetTool(ToolType.Eraser);
 
         if (Input.GetKeyDown(KeyCode.G))
-            drawingManager.SetTool(ToolType.Fill);
+            settingsChanger.SetTool(ToolType.Fill);
 
         if (Input.GetKeyDown(KeyCode.U))
-            drawingManager.CycleShapeTool();
+            settingsChanger.CycleShapeTool();
     }
 
     private void HandleEditShortcuts()
@@ -63,19 +64,19 @@ public class ShortcutManager : MonoBehaviour
             exportFile.ExportFontAtlas();
     }
 
-    void HandleBrushSizeShortcuts()
+    private void HandleBrushSizeShortcuts()
     {
         if (Input.GetKeyDown(KeyCode.LeftBracket))
         {
-            int newSize = Mathf.Max(1, DrawingManager.brushSize - 1);
-            drawingManager.SetBrushSize(newSize);
+            int newSize = Mathf.Max(1, drawingManager.brushSize - 1);
+            settingsChanger.SetBrushSize(newSize);
             brushUI.RefreshFromProjectSettings();
         }
 
         if (Input.GetKeyDown(KeyCode.RightBracket))
         {
-            int newSize = DrawingManager.brushSize + 1;
-            drawingManager.SetBrushSize(newSize);
+            int newSize = drawingManager.brushSize + 1;
+            settingsChanger.SetBrushSize(newSize);
             brushUI.RefreshFromProjectSettings();
         }
     }

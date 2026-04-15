@@ -1093,6 +1093,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShortcutManager
   drawingManager: {fileID: 1966295224}
+  settingsChanger: {fileID: 1280131501}
   undoRedoManager: {fileID: 2028750617}
   saveFile: {fileID: 766895468}
   openFile: {fileID: 766895469}
@@ -2263,6 +2264,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6e2d2a72f0ebf44fbd2dd8caac2cfc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BrushCursor
+  drawingManager: {fileID: 1966295224}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -3194,6 +3196,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProjectSettingsManager
   ProjectNameInputField: {fileID: 1524244993}
   BrushColorInputField: {fileID: 1267550908}
+  drawingManager: {fileID: 1966295224}
 --- !u!1 &691370015
 GameObject:
   m_ObjectHideFlags: 0
@@ -3457,6 +3460,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SaveFile
   outputText: {fileID: 1699425058}
+  drawingManager: {fileID: 1966295224}
 --- !u!114 &766895469
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3487,6 +3491,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NewFile
   outputText: {fileID: 1699425058}
+  drawingManager: {fileID: 1966295224}
 --- !u!4 &766895471
 Transform:
   m_ObjectHideFlags: 0
@@ -4053,6 +4058,7 @@ Transform:
   - {fileID: 2028750616}
   - {fileID: 80571029}
   - {fileID: 304988495}
+  - {fileID: 1280131500}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &997510309
@@ -7001,6 +7007,51 @@ Transform:
   - {fileID: 636364657}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1280131499
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1280131500}
+  - component: {fileID: 1280131501}
+  m_Layer: 0
+  m_Name: SettingsChanger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1280131500
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1280131499}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 976862014}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1280131501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1280131499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e55902a14459ca3418b7f3ff4fa6584b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SettingsChanger
+  drawingManager: {fileID: 1966295224}
 --- !u!1 &1307525670
 GameObject:
   m_ObjectHideFlags: 0
@@ -7305,7 +7356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fde6c65c01425547b601a7464a05feb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BrushUI
-  drawingManager: {fileID: 1966295224}
+  settingsChanger: {fileID: 1280131501}
   brushSelector: {fileID: 284308365}
   eraserSelector: {fileID: 1735183245}
   fillSelector: {fileID: 828403144}
@@ -10172,6 +10223,30 @@ MonoBehaviour:
   drawImage: {fileID: 513928675}
   totalPixelsX: 1024
   totalPixelsY: 512
+  brushSize: 6
+  brushColor: {r: 0, g: 0, b: 0, a: 1}
+  currentTool: 0
+  brushShape: 0
+  opacity: 1
+  hardness: 1
+  spacing: 0.25
+  calligraphyAngle: 45
+  calligraphyAspect: 0.3
+  currentStroke:
+    points: []
+    brushSize: 0
+    opacity: 0
+    hardness: 0
+    spacing: 0
+    isFill: 0
+    shape: 0
+    isEraser: 0
+    angle: 0
+    aspectRatio: 0
+    r: 0
+    g: 0
+    b: 0
+    a: 0
 --- !u!1 &1969493071
 GameObject:
   m_ObjectHideFlags: 0

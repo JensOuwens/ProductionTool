@@ -12,6 +12,7 @@ public class ProjectSettingsManager : MonoBehaviour
 
     [SerializeField] private TMP_InputField ProjectNameInputField;
     [SerializeField] private ColorPicker BrushColorInputField;
+    [SerializeField] private DrawingManager drawingManager;
 
     private void Awake()
     {
@@ -50,7 +51,7 @@ public class ProjectSettingsManager : MonoBehaviour
         currentProjectSettings.brushColor = "#" + hexColor;
 
 
-        DrawingManager.brushColor = newColor; 
+        drawingManager.brushColor = newColor; 
     }
 
     

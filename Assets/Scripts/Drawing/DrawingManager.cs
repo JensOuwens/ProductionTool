@@ -10,18 +10,18 @@ public class DrawingManager : MonoBehaviour
     [SerializeField] public int totalPixelsX = 1024;
     [SerializeField] public int totalPixelsY = 512;
 
-    public static int brushSize = 6;
-    public static Color brushColor = Color.black;
+    public int brushSize = 6;
+    public Color brushColor = Color.black;
 
-    public static ToolType currentTool = ToolType.Brush;
-    public static BrushShape brushShape = BrushShape.Circle;
+    public ToolType currentTool = ToolType.Brush;
+    public BrushShape brushShape = BrushShape.Circle;
 
-    public static float opacity = 1f;
-    public static float hardness = 1f;
-    public static float spacing = 0.25f;
+    public float opacity = 1f;
+    public float hardness = 1f;
+    public float spacing = 0.25f;
 
-    public static float calligraphyAngle = 45f;
-    public static float calligraphyAspect = 0.3f;
+    public float calligraphyAngle = 45f;
+    public float calligraphyAspect = 0.3f;
 
     private Texture2D generatedTexture;
     private RectTransform rectTransform;
@@ -33,7 +33,7 @@ public class DrawingManager : MonoBehaviour
     private bool isReady;
 
     private BrushCursor brushCursor;
-    private Stroke currentStroke;
+    public Stroke currentStroke;
     
     private PencilBrush pencilBrush;
     private FloodFillBrush floodFillBrush;
@@ -92,8 +92,7 @@ void DrawFromMouse()
 
     if (x < 0 || y < 0 || x >= totalPixelsX || y >= totalPixelsY)
         return;
-
-    //CHANGE HERE
+    
     if (currentTool == ToolType.Fill)
     {
         if (Input.GetMouseButtonDown(0))
@@ -127,7 +126,7 @@ void DrawFromMouse()
             );
         }
 
-        return; // IMPORTANT: kills pencil logic completely
+        return;
     }
 
 
@@ -196,33 +195,9 @@ void DrawFromMouse()
     }
 }
 
-//CHANGE TOO
-void FloodFill(int x, int y, Color target, Color replacement, Texture2D tex)
-{
-    if (target == replacement) return;
-
-    Stack<Vector2Int> stack = new Stack<Vector2Int>();
-    stack.Push(new Vector2Int(x, y));
-
-    while (stack.Count > 0)
-    {
-        Vector2Int p = stack.Pop();
-
-        if (p.x < 0 || p.y < 0 || p.x >= totalPixelsX || p.y >= totalPixelsY)
-            continue;
-
-        if (tex.GetPixel(p.x, p.y) != target)
-            continue;
-
-        tex.SetPixel(p.x, p.y, replacement);
-
-        stack.Push(p + Vector2Int.up);
-        stack.Push(p + Vector2Int.down);
-        stack.Push(p + Vector2Int.left);
-        stack.Push(p + Vector2Int.right);
-    }
-}
-
+/// <summary>
+/// Line Of QUIT
+/// </summary>
     Vector2 SnapTo8Directions(Vector2 origin, Vector2 current)
     {
         Vector2 delta = current - origin;
@@ -520,86 +495,7 @@ private void DrawBrushStampIntoBuffer(Vector2 pos, Stroke s, Color[] buffer)
 
     //DONT KNOW YET
     public CharacterData GetCurrentCharacter() => currentCharacter;
-
-    //PROBABLY DO SO,ETHING DIFFERENT
-    private static BrushCursor Cursor =>
-        Object.FindObjectOfType<BrushCursor>();
-
-    //DONT KNOW YET
-    private static void NotifyCursor()
-    {
-        if (Cursor != null)
-            Cursor.OnBrushSettingsChanged();
-    }
-
-    //SETTINGS IN DIFFERENT SCRIPT
-    public void SetBrushSize(int size)
-    {
-        brushSize = Mathf.Clamp(size, 1, 30);
-
-        var ps = ProjectSettingsManager.Instance.currentProjectSettings;
-        if (ps != null)
-            ps.brushSize = brushSize;
-
-        NotifyCursor();
-    }
-
-    public void SetOpacity(float val)
-    {
-        opacity = val;
-        NotifyCursor();
-    }
-
-    public void SetHardness(float val)
-    {
-        hardness = val;
-        NotifyCursor();
-    }
-
-    public void SetSpacing(float val)
-    {
-        spacing = val;
-        NotifyCursor();
-    }
-
-    public void SetCalligraphyAngle(float val)
-    {
-        calligraphyAngle = val;
-        NotifyCursor();
-    }
-
-    public void SetCalligraphyAspect(float val)
-    {
-        calligraphyAspect = val;
-        NotifyCursor();
-    }
-
-    public void SetBrushShape(BrushShape shape)
-    {
-        brushShape = shape;
-        NotifyCursor();
-    }
-
-    public void SetTool(ToolType tool)
-    {
-        currentTool = tool;
-        UpdateCurrentBrush();
-        currentStroke = null;
-        NotifyCursor();
-    }
-
-    public void CycleShapeTool()
-    {
-        brushShape = brushShape switch
-        {
-            BrushShape.Circle => BrushShape.Square,
-            BrushShape.Square => BrushShape.Diamond,
-            BrushShape.Diamond => BrushShape.Calligraphy,
-            _ => BrushShape.Circle
-        };
-
-        NotifyCursor();
-    }
+    
     
     //CHANGE TO DIFFERENT SCRIPT
     public void RenderCharacterToTexture(CharacterData ch)
@@ -614,8 +510,8 @@ private void DrawBrushStampIntoBuffer(Vector2 pos, Stroke s, Color[] buffer)
         ch.cachedTexture.SetPixels(pixels);
         ch.cachedTexture.Apply();
     }
-    
-    private void UpdateCurrentBrush()
+
+    public void UpdateCurrentBrush()
     {
         currentBrush = currentTool switch
         {
@@ -624,5 +520,10 @@ private void DrawBrushStampIntoBuffer(Vector2 pos, Stroke s, Color[] buffer)
             ToolType.Fill => floodFillBrush,
             _ => pencilBrush
         };
+    }
+
+    public float GetBrushSizs()
+    {
+        return brushSize;
     }
 }

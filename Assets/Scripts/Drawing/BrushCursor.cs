@@ -10,6 +10,8 @@ public class BrushCursor : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private const int MIN_CURSOR_SIZE = 40;
     private const int MAX_CURSOR_SIZE = 400;
     private const int MIN_RADIUS = 3;
+    
+    [SerializeField] private DrawingManager drawingManager;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -33,7 +35,7 @@ public class BrushCursor : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void RebuildCursor()
     {
-        int radius = Mathf.Max(MIN_RADIUS, DrawingManager.brushSize);
+        int radius = Mathf.Max(MIN_RADIUS, drawingManager.brushSize);
         int size = Mathf.Clamp(radius * 2 + 1, MIN_CURSOR_SIZE, MAX_CURSOR_SIZE);
 
         if (cursorTex != null)
@@ -92,7 +94,7 @@ public class BrushCursor : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     private float GetShapeDistance(float x, float y, int r)
     {
-        return DrawingManager.brushShape switch
+        return drawingManager.brushShape switch
         {
             BrushShape.Circle =>
                 Mathf.Sqrt(x * x + y * y) / r,
@@ -112,13 +114,13 @@ public class BrushCursor : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     private float CalligraphyDistance(float x, float y, int r)
     {
-        float angle = DrawingManager.calligraphyAngle * Mathf.Deg2Rad;
+        float angle = drawingManager.calligraphyAngle * Mathf.Deg2Rad;
         float cos = Mathf.Cos(angle);
         float sin = Mathf.Sin(angle);
 
         float rx = (x * cos - y * sin) / r;
         float ry = (x * sin + y * cos) /
-                   (r * Mathf.Max(0.01f, DrawingManager.calligraphyAspect));
+                   (r * Mathf.Max(0.01f, drawingManager.calligraphyAspect));
 
         return Mathf.Sqrt(rx * rx + ry * ry);
     }

@@ -10,6 +10,7 @@ public class NewFile : MonoBehaviour
 
     private OpenFile openFile;
     private XmlSerializer xmlSerializer = new(typeof(ProjectSettings));
+    [SerializeField] private DrawingManager drawingManager;
 
     private void Awake()
     {
@@ -55,16 +56,16 @@ public class NewFile : MonoBehaviour
 
     void ApplyBrushSettings(ProjectSettings ps)
     {
-        DrawingManager.brushSize = ps.brushSize;
-        DrawingManager.opacity = ps.brushOpacity;
-        DrawingManager.hardness = ps.brushHardness;
-        DrawingManager.spacing = ps.brushSpacing;
-        DrawingManager.brushShape = ps.brushShape;
-        DrawingManager.currentTool = ps.currentTool;
-        DrawingManager.calligraphyAngle = ps.calligraphyAngle;
-        DrawingManager.calligraphyAspect = ps.calligraphyAspect;
+        drawingManager.brushSize = ps.brushSize;
+        drawingManager.opacity = ps.brushOpacity;
+        drawingManager.hardness = ps.brushHardness;
+        drawingManager.spacing = ps.brushSpacing;
+        drawingManager.brushShape = ps.brushShape;
+        drawingManager.currentTool = ps.currentTool;
+        drawingManager.calligraphyAngle = ps.calligraphyAngle;
+        drawingManager.calligraphyAspect = ps.calligraphyAspect;
 
         if (ColorUtility.TryParseHtmlString(ps.brushColor, out Color c))
-            DrawingManager.brushColor = c;
+            drawingManager.brushColor = c;
     }
 }

@@ -4,7 +4,7 @@ using TMPro;
 
 public class BrushUI : MonoBehaviour
 {
-    [SerializeField] private DrawingManager drawingManager;
+    [SerializeField] private SettingsChanger settingsChanger;
 
     [Header("Brush type buttons")]
     [SerializeField] private Button brushSelector;
@@ -38,21 +38,21 @@ public class BrushUI : MonoBehaviour
 
     private void Awake()
     {
-        brushSelector.onClick.AddListener(() => { drawingManager.SetTool(ToolType.Brush); UpdateVisibleSettings(); });
-        eraserSelector.onClick.AddListener(() => { drawingManager.SetTool(ToolType.Eraser); UpdateVisibleSettings(); });
-        fillSelector.onClick.AddListener(() => { drawingManager.SetTool(ToolType.Fill); UpdateVisibleSettings(); });
+        brushSelector.onClick.AddListener(() => { settingsChanger.SetTool(ToolType.Brush); UpdateVisibleSettings(); });
+        eraserSelector.onClick.AddListener(() => { settingsChanger.SetTool(ToolType.Eraser); UpdateVisibleSettings(); });
+        fillSelector.onClick.AddListener(() => { settingsChanger.SetTool(ToolType.Fill); UpdateVisibleSettings(); });
 
-        circleSelector.onClick.AddListener(() => { drawingManager.SetBrushShape(BrushShape.Circle); UpdateVisibleSettings(); SetCalligraphyUIActive(false); });
-        squareSelector.onClick.AddListener(() => { drawingManager.SetBrushShape(BrushShape.Square); UpdateVisibleSettings(); SetCalligraphyUIActive(false); });
-        diamondSelector.onClick.AddListener(() => { drawingManager.SetBrushShape(BrushShape.Diamond); UpdateVisibleSettings(); SetCalligraphyUIActive(false); });
-        calligraphySelector.onClick.AddListener(() => { drawingManager.SetBrushShape(BrushShape.Calligraphy); UpdateVisibleSettings(); SetCalligraphyUIActive(true); });
+        circleSelector.onClick.AddListener(() => { settingsChanger.SetBrushShape(BrushShape.Circle); UpdateVisibleSettings(); SetCalligraphyUIActive(false); });
+        squareSelector.onClick.AddListener(() => { settingsChanger.SetBrushShape(BrushShape.Square); UpdateVisibleSettings(); SetCalligraphyUIActive(false); });
+        diamondSelector.onClick.AddListener(() => { settingsChanger.SetBrushShape(BrushShape.Diamond); UpdateVisibleSettings(); SetCalligraphyUIActive(false); });
+        calligraphySelector.onClick.AddListener(() => { settingsChanger.SetBrushShape(BrushShape.Calligraphy); UpdateVisibleSettings(); SetCalligraphyUIActive(true); });
 
         RegisterBrushSizeInput();
-        RegisterPercentInput(opacityInput, drawingManager.SetOpacity);
-        RegisterPercentInput(hardnessInput, drawingManager.SetHardness);
-        RegisterPercentInput(spacingInput, drawingManager.SetSpacing);
-        RegisterDegreeInput(calligraphyAngleInput, drawingManager.SetCalligraphyAngle);
-        RegisterPercentInput(calligraphyAspectInput, drawingManager.SetCalligraphyAspect);
+        RegisterPercentInput(opacityInput, settingsChanger.SetOpacity);
+        RegisterPercentInput(hardnessInput, settingsChanger.SetHardness);
+        RegisterPercentInput(spacingInput, settingsChanger.SetSpacing);
+        RegisterDegreeInput(calligraphyAngleInput, settingsChanger.SetCalligraphyAngle);
+        RegisterPercentInput(calligraphyAspectInput, settingsChanger.SetCalligraphyAspect);
     }
 
     private void Start()
@@ -74,7 +74,7 @@ public class BrushUI : MonoBehaviour
 
             value = Mathf.Clamp(value, 1, 512);
             brushSizeInput.text = value.ToString();
-            drawingManager.SetBrushSize(value);
+            settingsChanger.SetBrushSize(value);
         });
     }
 
