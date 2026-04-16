@@ -13,7 +13,6 @@ public class OpenFile : MonoBehaviour
     private XmlSerializer xmlSerializer = new(typeof(ProjectSettings));
     
     [SerializeField] private DrawingManager drawingManager;
-    [SerializeField] private CanvasRenderManager canvasRenderManager;
     [SerializeField] private CharachterCollectionManager charachterCollectionManager;
     [SerializeField] private EnableCanvasOnLoad enableCanvasOnLoad;
 
@@ -41,7 +40,7 @@ public class OpenFile : MonoBehaviour
                 TextureFormat.RGBA32, false);
 
 
-            canvasRenderManager.RenderCharacterToTexture(ch);
+            drawingManager.RenderCharacterToTexture(ch);
         }
 
 
@@ -53,7 +52,7 @@ public class OpenFile : MonoBehaviour
         if (activeChar == null && loaded.characters.Count > 0)
             activeChar = loaded.characters[0];
 
-        canvasRenderManager.SetCurrentCharacter(activeChar);
+        drawingManager.SetCurrentCharacter(activeChar);
 
         charachterCollectionManager.LoadCharachtersIntoCollection();
         

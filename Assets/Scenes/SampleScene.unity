@@ -216,8 +216,6 @@ MonoBehaviour:
   CharachterCollectionContent: {fileID: 699014801}
   characterButtonPrefab: {fileID: 6407137812214087755, guid: 130107f8bd29e2341815c7445fa9bec1, type: 3}
   currentCharacterText: {fileID: 1263518586}
-  drawingManager: {fileID: 1966295224}
-  canvasRenderManager: {fileID: 370048189}
 --- !u!1 &174381625
 GameObject:
   m_ObjectHideFlags: 0
@@ -1560,51 +1558,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RectMask2D
   m_Padding: {x: -8, y: -5, z: -8, w: -5}
   m_Softness: {x: 0, y: 0}
---- !u!1 &370048187
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 370048188}
-  - component: {fileID: 370048189}
-  m_Layer: 0
-  m_Name: CanvasRenderManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &370048188
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 370048187}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 976862014}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &370048189
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 370048187}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c12a0653ac7f4448b9672de2266744e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CanvasRenderManager
-  drawingManager: {fileID: 1966295224}
 --- !u!1 &395682213
 GameObject:
   m_ObjectHideFlags: 0
@@ -3523,7 +3476,6 @@ MonoBehaviour:
   outputText: {fileID: 1699425058}
   CurrentFilePath: 
   drawingManager: {fileID: 1966295224}
-  canvasRenderManager: {fileID: 370048189}
   charachterCollectionManager: {fileID: 158908808}
   enableCanvasOnLoad: {fileID: 80571030}
 --- !u!114 &766895470
@@ -3540,9 +3492,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NewFile
   outputText: {fileID: 1699425058}
   drawingManager: {fileID: 1966295224}
-  canvasRenderManager: {fileID: 370048189}
-  charachterCollectionManager: {fileID: 158908808}
-  enableCanvasOnLoad: {fileID: 80571030}
 --- !u!4 &766895471
 Transform:
   m_ObjectHideFlags: 0
@@ -4110,7 +4059,6 @@ Transform:
   - {fileID: 80571029}
   - {fileID: 304988495}
   - {fileID: 1280131500}
-  - {fileID: 370048188}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &997510309
@@ -10275,7 +10223,6 @@ MonoBehaviour:
   drawImage: {fileID: 513928675}
   totalPixelsX: 1024
   totalPixelsY: 512
-  canvasRenderManager: {fileID: 370048189}
   brushSize: 6
   brushColor: {r: 0, g: 0, b: 0, a: 1}
   currentTool: 0
@@ -10285,11 +10232,6 @@ MonoBehaviour:
   spacing: 0.25
   calligraphyAngle: 45
   calligraphyAspect: 0.3
-  generatedTexture: {fileID: 0}
-  currentCharacter:
-    character: 
-    strokes: []
-    codepoint: 0
   currentStroke:
     points: []
     brushSize: 0
@@ -10768,8 +10710,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9135664967f5b2b4583daf448477b54a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UndoRedoManager
-  drawingManager: {fileID: 1966295224}
-  canvasRenderManager: {fileID: 370048189}
 --- !u!1 &2075458411
 GameObject:
   m_ObjectHideFlags: 0
