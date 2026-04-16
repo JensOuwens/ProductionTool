@@ -53,7 +53,7 @@ public class CanvasRenderManager : MonoBehaviour
             if (px < 0 || py < 0 || px >= totalPixelsX || py >= totalPixelsY)
                 continue;
 
-            float d = currentBrushShape.GetDistance(px,py,r,s);
+            float d = currentBrushShape.GetDistance(x,y,r,s);
 
             if (d > 1f) continue;
 
@@ -182,7 +182,7 @@ public class CanvasRenderManager : MonoBehaviour
             if (px < 0 || py < 0 || px >= totalPixelsX || py >= totalPixelsY)
                 continue;
 
-            float d = currentBrushShape.GetDistance(px,py,r,s);
+            float d = currentBrushShape.GetDistance(x,y,r,s);
 
             if (d > 1f) continue;
 
@@ -240,7 +240,7 @@ private void DrawBrushStampIntoBuffer(Vector2 pos, Stroke s, Color[] buffer)
         if (px < 0 || py < 0 || px >= totalPixelsX || py >= totalPixelsY)
             continue;
 
-        float d = currentBrushShape.GetDistance(px,py,r,s);
+        float d = currentBrushShape.GetDistance(x,y,r,s);
 
         if (d > 1f) continue;
 
