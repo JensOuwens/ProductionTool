@@ -19,7 +19,7 @@ public class PencilBrush : IBrush
         {
             stroke.AddPoint(current);
 
-            ctx.DrawLinePixels(lastPos, current, stroke); // reuse your existing function
+            ctx.canvasRenderManager.DrawLinePixels(lastPos, current, stroke);
             lastPos = current;
 
             tex.Apply();

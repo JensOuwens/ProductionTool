@@ -11,6 +11,9 @@ public class NewFile : MonoBehaviour
     private OpenFile openFile;
     private XmlSerializer xmlSerializer = new(typeof(ProjectSettings));
     [SerializeField] private DrawingManager drawingManager;
+    [SerializeField] private CanvasRenderManager canvasRenderManager;
+    [SerializeField] private CharachterCollectionManager charachterCollectionManager;
+    [SerializeField] private EnableCanvasOnLoad enableCanvasOnLoad;
 
     private void Awake()
     {
@@ -40,14 +43,11 @@ public class NewFile : MonoBehaviour
 
         ApplyBrushSettings(ps);
 
-        FindObjectOfType<DrawingManager>()
-            .SetCurrentCharacter(ps.characters[0]);
+        canvasRenderManager.SetCurrentCharacter(ps.characters[0]);
 
-        FindObjectOfType<CharachterCollectionManager>()
-            .LoadCharachtersIntoCollection();
+        charachterCollectionManager.LoadCharachtersIntoCollection();
         
-        FindObjectOfType<EnableCanvasOnLoad>()
-            .EnableCanvases();
+        enableCanvasOnLoad.EnableCanvases();
 
 
         ProjectSettingsManager.Instance.DisplayProjectSettings();

@@ -8,7 +8,8 @@ public class UndoRedoManager : MonoBehaviour
     private Dictionary<string, Stack<Stroke>> undoStacks = new Dictionary<string, Stack<Stroke>>();
     private Dictionary<string, Stack<Stroke>> redoStacks = new Dictionary<string, Stack<Stroke>>();
 
-    private DrawingManager drawingManager;
+    [SerializeField] private DrawingManager drawingManager;
+    [SerializeField] private CanvasRenderManager canvasRenderManager;
 
     private void Awake()
     {
@@ -18,8 +19,6 @@ public class UndoRedoManager : MonoBehaviour
             return;
         }
         Instance = this;
-
-        drawingManager = FindObjectOfType<DrawingManager>();
     }
 
     private Stack<Stroke> GetUndoStack(string character)
@@ -63,7 +62,7 @@ public class UndoRedoManager : MonoBehaviour
             character.strokes.Remove(last);
 
 
-        drawingManager.RedrawFromStrokes();
+        canvasRenderManager.RedrawFromStrokes();
     }
 
     public void Redo()
@@ -83,7 +82,7 @@ public class UndoRedoManager : MonoBehaviour
         character.strokes.Add(s);
 
 
-        drawingManager.RedrawFromStrokes();
+        canvasRenderManager.RedrawFromStrokes();
     }
 
 

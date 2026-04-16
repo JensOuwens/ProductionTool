@@ -11,12 +11,9 @@ public class CharachterCollectionManager : MonoBehaviour
     [SerializeField] private TMP_Text currentCharacterText;
 
     
-    private DrawingManager drawingManager;
-
-    private void Awake()
-    {
-        drawingManager = FindObjectOfType<DrawingManager>();
-    }
+    [SerializeField] private DrawingManager drawingManager;
+    [SerializeField] private CanvasRenderManager canvasRenderManager;
+    
 
     public void LoadCharachtersIntoCollection()
     {
@@ -74,10 +71,10 @@ public class CharachterCollectionManager : MonoBehaviour
         ps.currentCharacter = characterData.character;
 
 
-        drawingManager.SetCurrentCharacter(characterData);
+        canvasRenderManager.SetCurrentCharacter(characterData);
 
 
-        drawingManager.LoadCharacterHistory(characterData);
+        canvasRenderManager.LoadCharacterHistory(characterData);
 
 
         if (currentCharacterText != null)
