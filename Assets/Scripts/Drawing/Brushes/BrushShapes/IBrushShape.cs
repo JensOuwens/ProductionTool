@@ -2,5 +2,5 @@ using UnityEngine;
 
 public interface IBrushShape
 {
-    public void Execute();
+    public float GetDistance(int x, int y, int r, Stroke s);
 }

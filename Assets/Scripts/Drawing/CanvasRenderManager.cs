@@ -7,6 +7,12 @@ public class CanvasRenderManager : MonoBehaviour
     private int totalPixelsX;
     private int totalPixelsY;
 
+    private static readonly IBrushShape circle = new CircleShape();
+    private static readonly IBrushShape diamond = new DiamondShape();
+    private static readonly IBrushShape square = new SquareShape();
+    private static readonly IBrushShape caligraphy = new CaligraphyShape();
+    private IBrushShape currentBrushShape;
+
     private void Awake()
     {
         totalPixelsX = drawingManager.totalPixelsX;
@@ -37,6 +43,7 @@ public class CanvasRenderManager : MonoBehaviour
         int cx = (int)pos.x;
         int cy = (int)pos.y;
         int r = s.brushSize;
+        GetShape(s);
 
         for (int x = -r; x <= r; x++)
         for (int y = -r; y <= r; y++)
@@ -46,14 +53,7 @@ public class CanvasRenderManager : MonoBehaviour
             if (px < 0 || py < 0 || px >= totalPixelsX || py >= totalPixelsY)
                 continue;
 
-            float d = s.shape switch
-            {
-                BrushShape.Circle => Mathf.Sqrt(x * x + y * y) / r,
-                BrushShape.Square => Mathf.Max(Mathf.Abs(x), Mathf.Abs(y)) / r,
-                BrushShape.Diamond => (Mathf.Abs(x) + Mathf.Abs(y)) / r,
-                BrushShape.Calligraphy => CalligraphyDistance(x, y, r, s),
-                _ => 1f
-            };
+            float d = currentBrushShape.GetDistance(px,py,r,s);
 
             if (d > 1f) continue;
 
@@ -74,20 +74,7 @@ public class CanvasRenderManager : MonoBehaviour
             }
         }
     }
-
-
-    //DO SOMETHING WITH IT
-    float CalligraphyDistance(int x, int y, int r, Stroke s)
-    {
-        float rad = s.angle * Mathf.Deg2Rad;
-        float cos = Mathf.Cos(rad);
-        float sin = Mathf.Sin(rad);
-
-        float rx = (x * cos - y * sin) / r;
-        float ry = (x * sin + y * cos) / (r * s.aspectRatio);
-
-        return Mathf.Sqrt(rx * rx + ry * ry);
-    }
+    
     
     public void ClearCanvasVisual()
     {
@@ -179,13 +166,13 @@ public class CanvasRenderManager : MonoBehaviour
             DrawBrushStampIntoTexture(tex, p, s);
         }
     }
-
-    //WORK ON THIS
+    
     private void DrawBrushStampIntoTexture(Texture2D tex, Vector2 pos, Stroke s)
     {
         int cx = (int)pos.x;
         int cy = (int)pos.y;
         int r = s.brushSize;
+        GetShape(s);
 
         for (int x = -r; x <= r; x++)
         for (int y = -r; y <= r; y++)
@@ -195,14 +182,7 @@ public class CanvasRenderManager : MonoBehaviour
             if (px < 0 || py < 0 || px >= totalPixelsX || py >= totalPixelsY)
                 continue;
 
-            float d = s.shape switch
-            {
-                BrushShape.Circle => Mathf.Sqrt(x * x + y * y) / r,
-                BrushShape.Square => Mathf.Max(Mathf.Abs(x), Mathf.Abs(y)) / r,
-                BrushShape.Diamond => (Mathf.Abs(x) + Mathf.Abs(y)) / r,
-                BrushShape.Calligraphy => CalligraphyDistance(x, y, r, s),
-                _ => 1f
-            };
+            float d = currentBrushShape.GetDistance(px,py,r,s);
 
             if (d > 1f) continue;
 
@@ -245,12 +225,12 @@ private void DrawStrokeIntoBuffer(Stroke s, Color[] buffer)
     }
 }
 
-//Work on this
 private void DrawBrushStampIntoBuffer(Vector2 pos, Stroke s, Color[] buffer)
 {
     int cx = (int)pos.x;
     int cy = (int)pos.y;
     int r = s.brushSize;
+    GetShape(s);
 
     for (int x = -r; x <= r; x++)
     for (int y = -r; y <= r; y++)
@@ -260,14 +240,7 @@ private void DrawBrushStampIntoBuffer(Vector2 pos, Stroke s, Color[] buffer)
         if (px < 0 || py < 0 || px >= totalPixelsX || py >= totalPixelsY)
             continue;
 
-        float d = s.shape switch
-        {
-            BrushShape.Circle => Mathf.Sqrt(x * x + y * y) / r,
-            BrushShape.Square => Mathf.Max(Mathf.Abs(x), Mathf.Abs(y)) / r,
-            BrushShape.Diamond => (Mathf.Abs(x) + Mathf.Abs(y)) / r,
-            BrushShape.Calligraphy => CalligraphyDistance(x, y, r, s),
-            _ => 1f
-        };
+        float d = currentBrushShape.GetDistance(px,py,r,s);
 
         if (d > 1f) continue;
 
@@ -301,5 +274,16 @@ public void RenderCharacterToTexture(CharacterData ch)
 
     ch.cachedTexture.SetPixels(pixels);
     ch.cachedTexture.Apply();
+}
+
+void GetShape(Stroke s)
+{
+    switch (s.shape)
+    {
+        case BrushShape.Circle: currentBrushShape = circle; break;
+        case BrushShape.Square: currentBrushShape = square; break;
+        case BrushShape.Diamond: currentBrushShape = diamond; break;
+        case BrushShape.Calligraphy: currentBrushShape = caligraphy; break;
+    }
 }
 }
