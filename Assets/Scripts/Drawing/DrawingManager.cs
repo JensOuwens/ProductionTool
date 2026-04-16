@@ -160,17 +160,17 @@ void DrawFromMouse()
     
     if (currentStroke != null)
     {
+        Vector2 drawTarget = curPos;
+
+        if (Input.GetKey(KeyCode.LeftShift))
+            drawTarget = SnapTo8Directions(lineStart, curPos);
+
         currentBrush.OnMouseDrag(
             currentCharacter.cachedTexture,
-            new Vector2Int((int)curPos.x, (int)curPos.y),
+            new Vector2Int((int)drawTarget.x, (int)drawTarget.y),
             currentStroke,
             this
         );
-
-        Vector2 drawTarget = curPos;
-
-        if (Input.GetMouseButton(2))
-            drawTarget = SnapTo8Directions(lineStart, curPos);
 
         if (Vector2.Distance(drawTarget, lastPos) >= brushSize * spacing)
         {
@@ -197,18 +197,21 @@ void DrawFromMouse()
     }
 }
 
-    Vector2 SnapTo8Directions(Vector2 origin, Vector2 current)
-    {
-        Vector2 delta = current - origin;
-        if (delta.sqrMagnitude < 0.0001f)
-            return origin;
+Vector2 SnapTo8Directions(Vector2 origin, Vector2 current)
+{
+    Vector2 delta = current - origin;
+    if (delta.sqrMagnitude < 0.0001f)
+        return origin;
 
-        float angle = Mathf.Atan2(delta.y, delta.x);
-        float snappedAngle = Mathf.Round(angle / (Mathf.PI / 4f)) * (Mathf.PI / 4f);
-        float length = delta.magnitude;
+    float angle = Mathf.Atan2(delta.y, delta.x);
+    float snappedAngle = Mathf.Round(angle / (Mathf.PI / 4f)) * (Mathf.PI / 4f);
 
-        return origin + new Vector2(Mathf.Cos(snappedAngle), Mathf.Sin(snappedAngle)) * length;
-    }
+    Vector2 snappedDir = new Vector2(Mathf.Cos(snappedAngle), Mathf.Sin(snappedAngle));
+
+    float projectedLength = Vector2.Dot(delta, snappedDir);
+
+    return origin + snappedDir * projectedLength;
+}
     
     public CharacterData GetCurrentCharacter() => currentCharacter;
 

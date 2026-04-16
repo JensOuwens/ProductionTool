@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="a2a7ce52-a557-4dc2-8641-2df5157c3922" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ProductionTool/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ProductionTool/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Drawing/CanvasRenderManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Drawing/CanvasRenderManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Drawing/DrawingManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Drawing/DrawingManager.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -148,7 +148,7 @@
       <workItem from="1776245234665" duration="342000" />
       <workItem from="1776320469509" duration="4318000" />
       <workItem from="1776345396024" duration="3000" />
-      <workItem from="1776345443894" duration="30000" />
+      <workItem from="1776345443894" duration="579000" />
     </task>
     <servers />
   </component>
