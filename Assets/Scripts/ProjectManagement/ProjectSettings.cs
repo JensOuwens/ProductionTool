@@ -51,8 +51,8 @@ public class ProjectSettings
         brushSize = 6;
 
         brushOpacity = 1f;
-        brushHardness = 1f;
-        brushSpacing = 0.25f;
+        brushHardness = 0.20f;
+        brushSpacing = 0.35f;
 
         brushShape = BrushShape.Circle;
         currentTool = ToolType.Brush;
