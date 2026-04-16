@@ -35,17 +35,68 @@ public class BrushUI : MonoBehaviour
 
     [SerializeField] private TMP_InputField calligraphyAspectInput;
     [SerializeField] private GameObject calligraphyAspectText;
+    
+    [Header("button colors")]
+    [SerializeField] private Color unselectedColor;
+    [SerializeField] private Color selectedColor;
+    
+    [Header("button background")]
+    [SerializeField] private Image brushBG;
+    [SerializeField] private Image eraserBG;
+    [SerializeField] private Image fillBG;
+
+    [SerializeField] private Image circleBG;
+    [SerializeField] private Image squareBG;
+    [SerializeField] private Image diamondBG;
+    [SerializeField] private Image calligraphyBG;
 
     private void Awake()
     {
-        brushSelector.onClick.AddListener(() => { settingsChanger.SetTool(ToolType.Brush); UpdateVisibleSettings(); });
-        eraserSelector.onClick.AddListener(() => { settingsChanger.SetTool(ToolType.Eraser); UpdateVisibleSettings(); });
-        fillSelector.onClick.AddListener(() => { settingsChanger.SetTool(ToolType.Fill); UpdateVisibleSettings(); });
+        brushSelector.onClick.AddListener(() => {
+            settingsChanger.SetTool(ToolType.Brush);
+            UpdateToolButtons(ToolType.Brush);
+            UpdateVisibleSettings();
+        });
 
-        circleSelector.onClick.AddListener(() => { settingsChanger.SetBrushShape(BrushShape.Circle); UpdateVisibleSettings(); SetCalligraphyUIActive(false); });
-        squareSelector.onClick.AddListener(() => { settingsChanger.SetBrushShape(BrushShape.Square); UpdateVisibleSettings(); SetCalligraphyUIActive(false); });
-        diamondSelector.onClick.AddListener(() => { settingsChanger.SetBrushShape(BrushShape.Diamond); UpdateVisibleSettings(); SetCalligraphyUIActive(false); });
-        calligraphySelector.onClick.AddListener(() => { settingsChanger.SetBrushShape(BrushShape.Calligraphy); UpdateVisibleSettings(); SetCalligraphyUIActive(true); });
+        eraserSelector.onClick.AddListener(() => {
+            settingsChanger.SetTool(ToolType.Eraser);
+            UpdateToolButtons(ToolType.Eraser);
+            UpdateVisibleSettings();
+        });
+
+        fillSelector.onClick.AddListener(() => {
+            settingsChanger.SetTool(ToolType.Fill);
+            UpdateToolButtons(ToolType.Fill);
+            UpdateVisibleSettings();
+        });
+
+        circleSelector.onClick.AddListener(() => {
+            settingsChanger.SetBrushShape(BrushShape.Circle);
+            UpdateShapeButtons(BrushShape.Circle);
+            UpdateVisibleSettings();
+            SetCalligraphyUIActive(false);
+        });
+
+        squareSelector.onClick.AddListener(() => {
+            settingsChanger.SetBrushShape(BrushShape.Square);
+            UpdateShapeButtons(BrushShape.Square);
+            UpdateVisibleSettings();
+            SetCalligraphyUIActive(false);
+        });
+
+        diamondSelector.onClick.AddListener(() => {
+            settingsChanger.SetBrushShape(BrushShape.Diamond);
+            UpdateShapeButtons(BrushShape.Diamond);
+            UpdateVisibleSettings();
+            SetCalligraphyUIActive(false);
+        });
+
+        calligraphySelector.onClick.AddListener(() => {
+            settingsChanger.SetBrushShape(BrushShape.Calligraphy);
+            UpdateShapeButtons(BrushShape.Calligraphy);
+            UpdateVisibleSettings();
+            SetCalligraphyUIActive(true);
+        });
 
         RegisterBrushSizeInput();
         RegisterPercentInput(opacityInput, settingsChanger.SetOpacity);
@@ -57,7 +108,7 @@ public class BrushUI : MonoBehaviour
 
     private void Start()
     {
-        UpdateVisibleSettings();
+        RefreshUIFromSettings();
     }
     
     public void RefreshFromProjectSettings()
@@ -181,5 +232,35 @@ public class BrushUI : MonoBehaviour
 
         calligraphyAspectInput.gameObject.SetActive(isActive);
         calligraphyAspectText.SetActive(isActive);
+    }
+    
+    private void SetButtonSelected(Image bg, bool selected)
+    {
+        bg.color = selected ? selectedColor : unselectedColor;
+    }
+
+    private void UpdateToolButtons(ToolType selectedTool)
+    {
+        SetButtonSelected(brushBG, selectedTool == ToolType.Brush);
+        SetButtonSelected(eraserBG, selectedTool == ToolType.Eraser);
+        SetButtonSelected(fillBG, selectedTool == ToolType.Fill);
+    }
+
+    private void UpdateShapeButtons(BrushShape selectedShape)
+    {
+        SetButtonSelected(circleBG, selectedShape == BrushShape.Circle);
+        SetButtonSelected(squareBG, selectedShape == BrushShape.Square);
+        SetButtonSelected(diamondBG, selectedShape == BrushShape.Diamond);
+        SetButtonSelected(calligraphyBG, selectedShape == BrushShape.Calligraphy);
+    }
+    
+    public void RefreshUIFromSettings()
+    {
+        var ps = ProjectSettingsManager.Instance.currentProjectSettings;
+
+        UpdateToolButtons(ps.currentTool);
+        UpdateShapeButtons(ps.brushShape);
+
+        UpdateVisibleSettings();
     }
 }

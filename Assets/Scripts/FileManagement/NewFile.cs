@@ -14,6 +14,7 @@ public class NewFile : MonoBehaviour
     [SerializeField] private CanvasRenderManager canvasRenderManager;
     [SerializeField] private CharachterCollectionManager charachterCollectionManager;
     [SerializeField] private EnableCanvasOnLoad enableCanvasOnLoad;
+    [SerializeField] private BrushUI brushUI;
 
     private void Awake()
     {
@@ -42,6 +43,7 @@ public class NewFile : MonoBehaviour
         ProjectSettingsManager.Instance.currentProjectSettings = ps;
 
         ApplyBrushSettings(ps);
+        brushUI.RefreshUIFromSettings();
 
         canvasRenderManager.SetCurrentCharacter(ps.characters[0]);
 

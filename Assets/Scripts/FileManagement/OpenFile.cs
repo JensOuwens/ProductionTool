@@ -16,6 +16,7 @@ public class OpenFile : MonoBehaviour
     [SerializeField] private CanvasRenderManager canvasRenderManager;
     [SerializeField] private CharachterCollectionManager charachterCollectionManager;
     [SerializeField] private EnableCanvasOnLoad enableCanvasOnLoad;
+    [SerializeField] private BrushUI brushUI;
 
     public void OnClickOpenFile()
     {
@@ -46,6 +47,7 @@ public class OpenFile : MonoBehaviour
 
 
         ApplyBrushSettings(loaded);
+        brushUI.RefreshUIFromSettings();
 
         CharacterData activeChar = loaded.characters.Find(
             c => c.character == loaded.currentCharacter);
